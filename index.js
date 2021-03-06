@@ -39,28 +39,37 @@ module.exports = class betterfriendslist extends Plugin {
 
 		inject('bfl-peoplelist', PeopleListItem, 'render', (args, res) => {
 			if (typeof res.props.children === 'function') {
-				if (res._owner.pendingProps.mutualGuilds.length !== 0) {
+				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					let childrenRender = res.props.children;
 					res.props.children = (...args) => {
 						let children = childrenRender(...args);
 						children.props.children.splice(1, 0, React.createElement('div', { className: 'mutualGuilds-s7F2aa container-5VyO4t' }));
-						res._owner.pendingProps.mutualGuilds.forEach((guild, idx) => {
+						res._owner.stateNode.props.mutualGuilds.forEach((guild, idx) => {
 							const icon = React.createElement(Tooltip, {
 								text: guild.name,
 								position: 'top',
 								children: React.createElement(
 									'div',
 									{
-										className: res._owner.pendingProps.mutualGuilds[idx + 1]
+										className: res._owner.stateNode.props.mutualGuilds[idx + 1]
 											? 'iconContainerMasked-G-akdf iconContainer-IBAtWs'
 											: 'iconContainer-IBAtWs',
 									},
-									React.createElement('div', {
-										className: 'icon-3o6xvg icon-r6DlKo iconSizeSmaller-2whVAO iconInactive-98JN5i',
-										style: {
-											backgroundImage: `url("https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256")`,
-										},
-									})
+									guild.icon
+										? React.createElement('div', {
+												className: 'icon-3o6xvg icon-r6DlKo iconSizeSmaller-2whVAO iconInactive-98JN5i',
+												style: {
+													backgroundImage: `url("https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256")`,
+												},
+										  })
+										: React.createElement(
+												'div',
+												{
+													className: 'icon-3o6xvg icon-r6DlKo iconSizeSmaller-2whVAO iconInactive-98JN5i noIcon-1a_FrS',
+													style: { fontSize: '11px' },
+												},
+												React.createElement('div', { className: 'acronym-1e2Mdt' }, guild.acronym)
+										  )
 								),
 							});
 							if (!children.props.children[1].props.children) children.props.children[1].props.children = [icon];
