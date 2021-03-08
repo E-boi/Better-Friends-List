@@ -18,4 +18,5 @@ The tab bar is now working!
 
 [] - Get ready for release in powercord server???
 > [] - Base plugin and settings done
+
 > [] - Get previews done
