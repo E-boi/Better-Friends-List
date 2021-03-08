@@ -1,14 +1,16 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { findInTree } = require('powercord/util');
-const { getModule, getModuleByDisplayName, constants, React } = require('powercord/webpack');
-const { Tooltip } = require('powercord/components');
+const { getModule, getModuleByDisplayName, constants, React, i18n } = require('powercord/webpack');
+const { Tooltip, Flex, Icon } = require('powercord/components');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.css');
+		let sortKey, sortReversed, keyReversed;
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
-		const PeopleListItem = getModule(m => m.displayName === 'FriendRow', false).prototype;
+		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
+		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
@@ -37,7 +39,7 @@ module.exports = class betterfriendslist extends Plugin {
 			return res;
 		});
 
-		inject('bfl-peoplelist', PeopleListItem, 'render', (args, res) => {
+		inject('bfl-peoplelist', FriendRow, 'render', (args, res) => {
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					let childrenRender = res.props.children;
@@ -81,12 +83,85 @@ module.exports = class betterfriendslist extends Plugin {
 			}
 			return res;
 		});
+
+		inject('bfl-personList', PeopleListNoneLazy, 'default', (args, res) => {
+			if (sortKey) {
+				args[0].statusSections = [].concat(args[0].statusSections).map(section => {
+					// for some reason this doesn't update unless you click something pls dm if you know to update right away
+					let newSection = [].concat(section);
+					if (sortKey)
+						newSection = newSection
+							.map(user => Object.assign({}, user))
+							.sort((x, y) => {
+								let xValue = x[sortKey],
+									yValue = y[sortKey];
+								return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+							});
+					if (sortReversed) newSection.reverse();
+					return newSection;
+				});
+			}
+			const headers = getModule(['headerCell'], false);
+			let childrenRender = res.props.children.props.children;
+			const title = args[0].getSectionTitle(args[0].statusSections, 0);
+			res.props.children.props.children = (...args) => {
+				let children = childrenRender(...args);
+				children.props.children[0].props.children[0] = [
+					React.createElement(
+						'div',
+						{ className: 'title-30qZAO container-2ax-kl' },
+						React.createElement(Flex, {
+							align: Flex.Align.CENTER,
+							children: [
+								React.createElement('div', { className: 'betterFriendsList-s66', children: [title] }),
+								[{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME }]
+									.filter(n => n)
+									.map(data =>
+										React.createElement('div', {
+											className: `${headers.headerCell} headerCell-T6Fo3K nameCell-lo9 ${sortKey === data.key && headers.headerCellSorted} ${
+												headers.clickable
+											}`,
+											children: React.createElement('div', {
+												className: headers.headerCellContent,
+												children: [
+													data.label,
+													sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+												].filter(n => n),
+											}),
+											onClick: () => {
+												if (sortKey === data.key) {
+													if (!sortReversed) sortReversed = true;
+													else {
+														sortKey = null;
+														sortReversed = false;
+													}
+												} else {
+													sortKey = data.key;
+													sortReversed = false;
+												}
+												const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
+												if (button) button.click();
+											},
+										})
+									),
+							],
+						})
+					),
+				];
+				return children;
+			};
+			return res;
+		});
+		PeopleListNoneLazy.default.displayName = 'PeopleListSectionedNonLazy';
 	}
 
 	pluginWillUnload() {
+		uninject('bfl-personList');
 		uninject('bfl-tabbar');
 		uninject('bfl-peoplelist');
 	}
+
+	rerenderList() {}
 
 	createBadge(amount, text) {
 		let badge = React.createElement(getModule(['NumberBadge'], false).NumberBadge, {
