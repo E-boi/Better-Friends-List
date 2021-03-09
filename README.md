@@ -1,7 +1,7 @@
 # Better-Friends-List
 a port from bd with hopefully all the feature ported
 
-# V0.4
+# V0.5
 Settings added
 
 # V0.4
