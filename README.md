@@ -1,6 +1,9 @@
 # Better-Friends-List
 a port from bd with hopefully all the feature ported
 
+# V0.4
+Sort your friends list by Status! (This button is buggy)
+
 # V0.3 buggy
 Sort your friends list by name! (some interesting stuff here :eyes:)
 ![image](https://user-images.githubusercontent.com/54505527/110262861-f6eaef80-7f82-11eb-8f97-462968526005.png)
@@ -11,6 +14,8 @@ The tab bar is now working!
 
 # Todos:
 ~~[x] - Add mutual guilds in friend menu~~
+
+[] - Add a favorite friends sorting system
 
 [] - Add the search feature that the bd version has
 

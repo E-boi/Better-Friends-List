@@ -7,7 +7,16 @@ const { Tooltip, Flex, Icon } = require('powercord/components');
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.css');
-		let sortKey, sortReversed, keyReversed;
+		let sortKey, sortReversed;
+		const statusSortOrder = {
+			online: 0,
+			streaming: 1,
+			idle: 2,
+			dnd: 3,
+			offline: 4,
+			invisible: 5,
+			unknown: 6,
+		};
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
@@ -17,7 +26,7 @@ module.exports = class betterfriendslist extends Plugin {
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
 			for (let id in relationships) relationshipCount[relationships[id]]++;
 			for (let child of res.props.children)
-				if (child && child.props.id != 'ADD_FRIEND') {
+				if (child && child.props.id !== 'ADD_FRIEND') {
 					const newChildren = [child.props.children].flat().filter(child => findInTree(child, 'type.displayName') != 'NumberBadge');
 					switch (child.props.id) {
 						case 'ALL':
@@ -27,8 +36,8 @@ module.exports = class betterfriendslist extends Plugin {
 							newChildren.push(this.createBadge(getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()));
 							break;
 						case 'PENDING':
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_INCOMING], 'Incoming'));
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING], 'Outgoing'));
+							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_INCOMING], i18n.Messages.INCOMING));
+							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING], i18n.Messages.OUTGOING));
 							break;
 						case 'BLOCKED':
 							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.BLOCKED]));
@@ -39,7 +48,7 @@ module.exports = class betterfriendslist extends Plugin {
 			return res;
 		});
 
-		inject('bfl-peoplelist', FriendRow, 'render', (args, res) => {
+		inject('bfl-peoplelist', FriendRow, 'render', (_, res) => {
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					let childrenRender = res.props.children;
@@ -89,14 +98,15 @@ module.exports = class betterfriendslist extends Plugin {
 				args[0].statusSections = [].concat(args[0].statusSections).map(section => {
 					// for some reason this doesn't update unless you click something pls dm if you know to update right away
 					let newSection = [].concat(section);
-					if (sortKey)
+					if (sortKey) {
 						newSection = newSection
-							.map(user => Object.assign({}, user))
+							.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.status] }))
 							.sort((x, y) => {
 								let xValue = x[sortKey],
 									yValue = y[sortKey];
 								return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
 							});
+					}
 					if (sortReversed) newSection.reverse();
 					return newSection;
 				});
@@ -114,7 +124,10 @@ module.exports = class betterfriendslist extends Plugin {
 							align: Flex.Align.CENTER,
 							children: [
 								React.createElement('div', { className: 'betterFriendsList-s66', children: [title] }),
-								[{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME }]
+								[
+									{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
+									{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
+								]
 									.filter(n => n)
 									.map(data =>
 										React.createElement('div', {
@@ -144,7 +157,9 @@ module.exports = class betterfriendslist extends Plugin {
 											},
 										})
 									),
-							],
+							]
+								.flat(10)
+								.filter(n => n),
 						})
 					),
 				];
