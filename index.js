@@ -36,8 +36,8 @@ module.exports = class betterfriendslist extends Plugin {
 							newChildren.push(this.createBadge(getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()));
 							break;
 						case 'PENDING':
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_INCOMING], i18n.Messages.INCOMING));
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING], i18n.Messages.OUTGOING));
+							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_INCOMING], 'Incoming'));
+							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING], 'Outgoing'));
 							break;
 						case 'BLOCKED':
 							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.BLOCKED]));
