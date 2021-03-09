@@ -2,6 +2,9 @@
 a port from bd with hopefully all the feature ported
 
 # V0.4
+Settings added
+
+# V0.4
 Sort your friends list by Status! (This button is buggy)
 
 # V0.3 buggy
@@ -19,9 +22,11 @@ The tab bar is now working!
 
 [] - Add the search feature that the bd version has
 
-[] - Add some settings
+~~[x] - Add some settings~~
 
 [] - Get ready for release in powercord server???
 > [] - Base plugin and settings done
+
+> [] - Try to fix bug where sorting doesn't update until a click
 
 > [] - Get previews done
