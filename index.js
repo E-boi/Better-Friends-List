@@ -3,6 +3,7 @@ const { inject, uninject } = require('powercord/injector');
 const { findInTree } = require('powercord/util');
 const { getModule, getModuleByDisplayName, constants, React, i18n } = require('powercord/webpack');
 const { Tooltip, Flex, Icon } = require('powercord/components');
+const Settings = require('./Components/settings');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
@@ -17,10 +18,19 @@ module.exports = class betterfriendslist extends Plugin {
 			invisible: 5,
 			unknown: 6,
 		};
+		powercord.api.settings.registerSettings(this.entityID, {
+			category: this.entityID,
+			label: 'Better Friends List',
+			render: Settings,
+		});
+		if (this.settings.get('mutualGuilds') === undefined || this.settings.get('mutualGuilds') === null) this.settings.set('mutualGuilds', true);
+		if (this.settings.get('sortOptions') === undefined || this.settings.get('sortOptions') === null) this.settings.set('sortOptions', true);
+		if (this.settings.get('totalAmount') === undefined || this.settings.get('totalAmount') === null) this.settings.set('totalAmount', true);
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
+			if (!this.settings.get('totalAmount')) return res;
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
@@ -49,6 +59,7 @@ module.exports = class betterfriendslist extends Plugin {
 		});
 
 		inject('bfl-peoplelist', FriendRow, 'render', (_, res) => {
+			if (!this.settings.get('mutualGuilds')) return res;
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					let childrenRender = res.props.children;
@@ -124,39 +135,41 @@ module.exports = class betterfriendslist extends Plugin {
 							align: Flex.Align.CENTER,
 							children: [
 								React.createElement('div', { className: 'betterFriendsList-s66', children: [title] }),
-								[
-									{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
-									{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
-								]
-									.filter(n => n)
-									.map(data =>
-										React.createElement('div', {
-											className: `${headers.headerCell} headerCell-T6Fo3K nameCell-lo9 ${sortKey === data.key && headers.headerCellSorted} ${
-												headers.clickable
-											}`,
-											children: React.createElement('div', {
-												className: headers.headerCellContent,
-												children: [
-													data.label,
-													sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
-												].filter(n => n),
-											}),
-											onClick: () => {
-												if (sortKey === data.key) {
-													if (!sortReversed) sortReversed = true;
-													else {
-														sortKey = null;
+								this.settings.get('sortOptions') &&
+									[
+										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
+										{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
+									]
+										.filter(n => n)
+										.map(data =>
+											React.createElement('div', {
+												className: `${headers.headerCell} headerCell-T6Fo3K nameCell-lo9 ${sortKey === data.key && headers.headerCellSorted} ${
+													headers.clickable
+												}`,
+												children: React.createElement('div', {
+													className: headers.headerCellContent,
+													children: [
+														data.label,
+														sortKey === data.key &&
+															React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+													].filter(n => n),
+												}),
+												onClick: () => {
+													if (sortKey === data.key) {
+														if (!sortReversed) sortReversed = true;
+														else {
+															sortKey = null;
+															sortReversed = false;
+														}
+													} else {
+														sortKey = data.key;
 														sortReversed = false;
 													}
-												} else {
-													sortKey = data.key;
-													sortReversed = false;
-												}
-												const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
-												if (button) button.click();
-											},
-										})
-									),
+													const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
+													if (button) button.click();
+												},
+											})
+										),
 							]
 								.flat(10)
 								.filter(n => n),
@@ -174,6 +187,7 @@ module.exports = class betterfriendslist extends Plugin {
 		uninject('bfl-personList');
 		uninject('bfl-tabbar');
 		uninject('bfl-peoplelist');
+		powercord.api.settings.unregisterSettings(this.entityID);
 	}
 
 	rerenderList() {}
