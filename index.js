@@ -3,7 +3,9 @@ const { inject, uninject } = require('powercord/injector');
 const { findInTree } = require('powercord/util');
 const { getModule, getModuleByDisplayName, constants, React, i18n } = require('powercord/webpack');
 const { Tooltip, Flex, Icon } = require('powercord/components');
+const { TextInput } = require('powercord/components/settings');
 const Settings = require('./Components/settings');
+const { search } = require('../pc-spotify/SpotifyAPI');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
@@ -23,13 +25,15 @@ module.exports = class betterfriendslist extends Plugin {
 			label: 'Better Friends List',
 			render: Settings,
 		});
-		if (this.settings.get('mutualGuilds') === undefined || this.settings.get('mutualGuilds') === null) this.settings.set('mutualGuilds', true);
-		if (this.settings.get('sortOptions') === undefined || this.settings.get('sortOptions') === null) this.settings.set('sortOptions', true);
-		if (this.settings.get('totalAmount') === undefined || this.settings.get('totalAmount') === null) this.settings.set('totalAmount', true);
+		if (this.settings.get('mutualGuilds') === undefined) this.settings.set('mutualGuilds', true);
+		if (this.settings.get('sortOptions') === undefined) this.settings.set('sortOptions', true);
+		if (this.settings.get('totalAmount') === undefined) this.settings.set('totalAmount', true);
+		if (this.settings.get('addSearch') === undefined) this.settings.set('addSearch', true);
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
+			if (res.props['aria-label'] !== 'Friends') return res; // fix so only tab bar in friends list gets inject into
 			if (!this.settings.get('totalAmount')) return res;
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
@@ -190,7 +194,10 @@ module.exports = class betterfriendslist extends Plugin {
 		powercord.api.settings.unregisterSettings(this.entityID);
 	}
 
-	rerenderList() {}
+	rerenderList() {
+		const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
+		if (button) button.click();
+	}
 
 	createBadge(amount, text) {
 		let badge = React.createElement(getModule(['NumberBadge'], false).NumberBadge, {
