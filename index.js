@@ -5,7 +5,6 @@ const { getModule, getModuleByDisplayName, constants, React, i18n } = require('p
 const { Tooltip, Flex, Icon } = require('powercord/components');
 const { TextInput } = require('powercord/components/settings');
 const Settings = require('./Components/settings');
-const { search } = require('../pc-spotify/SpotifyAPI');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
