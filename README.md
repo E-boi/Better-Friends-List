@@ -1,6 +1,9 @@
 # Better-Friends-List
 a port from bd with hopefully all the feature ported
 
+# V0.6
+Search bar added!
+
 # V0.5.1
 YEEEEESSSSSSSS. Friends list now update without a click.
 

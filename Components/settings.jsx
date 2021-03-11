@@ -20,6 +20,9 @@ module.exports = class betterfriendsSet extends React.PureComponent {
 				<SwitchItem value={getSetting('totalAmount')} onChange={() => toggleSetting('totalAmount')}>
 					Add total amount for all/requested/blocked
 				</SwitchItem>
+				<SwitchItem value={getSetting('addSearch')} onChange={() => toggleSetting('addSearch')}>
+					Add searchbar
+				</SwitchItem>
 			</>
 		);
 	}

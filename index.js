@@ -184,14 +184,23 @@ module.exports = class betterfriendslist extends Plugin {
 				children.props.children[0].props.children = [].concat(children.props.children[0].props.children).map(section => {
 					if (!section[0].key) return section;
 					let newSection = [].concat(section);
-					if (sortKey) {
-						newSection = newSection
-							.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status] }))
-							.sort((x, y) => {
-								let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
-									yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
-								return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
-							});
+					if (sortKey || searchQuery) {
+						if (searchQuery) {
+							console.log(searchQuery.toLowerCase());
+							let usedSearchQuery = searchQuery.toLowerCase();
+							newSection = newSection.filter(
+								user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1
+							);
+						}
+						if (sortKey) {
+							newSection = newSection
+								.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status] }))
+								.sort((x, y) => {
+									let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
+										yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
+									return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+								});
+						}
 					}
 					if (sortReversed) newSection.reverse();
 					return newSection;
