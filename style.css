@@ -1,12 +1,27 @@
-.mutualGuilds-s7F2aa {
+.bfl-mutualGuilds {
 	margin-left: 13px;
 	width: 200px;
 }
 
-.betterFriendsList-s66 {
+.bfl-header {
+	border-left: 1px solid var(--background-modifier-accent);
+	box-sizing: border-box;
+	padding: 0 12px;
+}
+
+.bfl-container {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+}
+
+.bfl-title {
 	width: 200px;
 }
 
-.nameCell-lo9 {
+.bfl-nameCell {
 	width: 150px;
 }

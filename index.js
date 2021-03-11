@@ -3,7 +3,6 @@ const { inject, uninject } = require('powercord/injector');
 const { findInTree } = require('powercord/util');
 const { getModule, getModuleByDisplayName, constants, React, i18n } = require('powercord/webpack');
 const { Tooltip, Flex, Icon } = require('powercord/components');
-const { TextInput } = require('powercord/components/settings');
 const Settings = require('./Components/settings');
 
 module.exports = class betterfriendslist extends Plugin {
@@ -26,13 +25,12 @@ module.exports = class betterfriendslist extends Plugin {
 			label: 'Better Friends List',
 			render: Settings,
 		});
-		if (this.settings.get('mutualGuilds') === undefined) this.settings.set('mutualGuilds', true);
-		if (this.settings.get('sortOptions') === undefined) this.settings.set('sortOptions', true);
-		if (this.settings.get('totalAmount') === undefined) this.settings.set('totalAmount', true);
-		if (this.settings.get('addSearch') === undefined) this.settings.set('addSearch', true);
+		this.settings.get('mutualGuilds', true), this.settings.get('sortOptions', true), this.settings.get('totalAmount', true), this.settings.get('addSearch', true);
+
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
+
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			if (res.props['aria-label'] !== 'Friends') return res; // fix so only tab bar in friends list gets inject into
 			if (!this.settings.get('totalAmount')) return res;
@@ -67,10 +65,11 @@ module.exports = class betterfriendslist extends Plugin {
 			if (!this.settings.get('mutualGuilds')) return res;
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
-					let childrenRender = res.props.children;
+					const childrenRender = res.props.children;
+					const Guild = getModule(['GuildIcon'], false);
 					res.props.children = (...args) => {
-						let children = childrenRender(...args);
-						children.props.children.splice(1, 0, React.createElement('div', { className: 'mutualGuilds-s7F2aa container-5VyO4t' }));
+						const children = childrenRender(...args);
+						children.props.children.splice(1, 0, React.createElement('div', { className: 'bfl-mutualGuilds bfl-container' }));
 						res._owner.stateNode.props.mutualGuilds.forEach((guild, idx) => {
 							const icon = React.createElement(Tooltip, {
 								text: guild.name,
@@ -78,24 +77,25 @@ module.exports = class betterfriendslist extends Plugin {
 								children: React.createElement(
 									'div',
 									{
-										className: res._owner.stateNode.props.mutualGuilds[idx + 1]
-											? 'iconContainerMasked-G-akdf iconContainer-IBAtWs'
-											: 'iconContainer-IBAtWs',
+										className: getModule(['iconContainer'], false).iconContainer,
 									},
 									guild.icon
-										? React.createElement('div', {
-												className: 'icon-3o6xvg icon-r6DlKo iconSizeSmaller-2whVAO iconInactive-98JN5i',
+										? React.createElement(Guild.GuildIcon, {
+												size: Guild.GuildIcon.Sizes.SMALLER,
+												guild: guild,
 												style: {
 													backgroundImage: `url("https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256")`,
 												},
 										  })
 										: React.createElement(
-												'div',
+												Guild.GuildIcon,
 												{
-													className: 'icon-3o6xvg icon-r6DlKo iconSizeSmaller-2whVAO iconInactive-98JN5i noIcon-1a_FrS',
+													size: Guild.GuildIcon.Sizes.SMALLER,
+													guild: guild,
+													className: getModule(['noIcon'], false).noIcon,
 													style: { fontSize: '11px' },
 												},
-												React.createElement('div', { className: 'acronym-1e2Mdt' }, guild.acronym)
+												React.createElement('div', { className: getModule(['noIcon'], false).acronym }, guild.acronym)
 										  )
 								),
 							});
@@ -122,7 +122,7 @@ module.exports = class betterfriendslist extends Plugin {
 						React.createElement(Flex, {
 							align: Flex.Align.CENTER,
 							children: [
-								React.createElement('div', { className: 'betterFriendsList-s66', children: [title] }),
+								React.createElement('div', { className: 'bfl-title', children: [title] }),
 								this.settings.get('sortOptions') &&
 									[
 										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
@@ -131,15 +131,12 @@ module.exports = class betterfriendslist extends Plugin {
 										.filter(n => n)
 										.map(data =>
 											React.createElement('div', {
-												className: `${headers.headerCell} headerCell-T6Fo3K nameCell-lo9 ${sortKey === data.key && headers.headerCellSorted} ${
-													headers.clickable
-												}`,
+												className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === data.key && headers.headerCellSorted, headers.clickable].join(' '),
 												children: React.createElement('div', {
 													className: headers.headerCellContent,
 													children: [
 														data.label,
-														sortKey === data.key &&
-															React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+														sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
 													].filter(n => n),
 												}),
 												onClick: () => {
@@ -153,19 +150,15 @@ module.exports = class betterfriendslist extends Plugin {
 														sortKey = data.key;
 														sortReversed = false;
 													}
-													const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
-													if (button) button.click();
+													this.rerenderList();
 												},
 											})
 										),
 								this.settings.get('addSearch') && // Search add but no functionally
-									React.createElement('div', {
-										className: 'flexChild-faoVW3 container-cMG81i small-2oHLgT',
-										style: { flex: '1 1 auto' },
+									React.createElement(Flex.Child, {
 										children: React.createElement('div', {
-											className: 'inner-2P4tQO',
 											children: React.createElement('input', {
-												className: 'input-3Xdcic',
+												className: getModule(['input'], false).input,
 												placeholder: 'Search',
 												value: searchQuery,
 												onChange: change => {
@@ -186,11 +179,8 @@ module.exports = class betterfriendslist extends Plugin {
 					let newSection = [].concat(section);
 					if (sortKey || searchQuery) {
 						if (searchQuery) {
-							console.log(searchQuery.toLowerCase());
 							let usedSearchQuery = searchQuery.toLowerCase();
-							newSection = newSection.filter(
-								user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1
-							);
+							newSection = newSection.filter(user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1);
 						}
 						if (sortKey) {
 							newSection = newSection
