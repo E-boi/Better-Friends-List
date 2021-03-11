@@ -9,7 +9,9 @@ const Settings = require('./Components/settings');
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.css');
-		let sortKey, sortReversed;
+		let sortKey,
+			sortReversed,
+			searchQuery = '';
 		const statusSortOrder = {
 			online: 0,
 			streaming: 1,
@@ -108,23 +110,6 @@ module.exports = class betterfriendslist extends Plugin {
 		});
 
 		inject('bfl-personList', PeopleListNoneLazy, 'default', (args, res) => {
-			if (sortKey) {
-				args[0].statusSections = [].concat(args[0].statusSections).map(section => {
-					// for some reason this doesn't update unless you click something pls dm if you know to update right away
-					let newSection = [].concat(section);
-					if (sortKey) {
-						newSection = newSection
-							.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.status] }))
-							.sort((x, y) => {
-								let xValue = x[sortKey],
-									yValue = y[sortKey];
-								return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
-							});
-					}
-					if (sortReversed) newSection.reverse();
-					return newSection;
-				});
-			}
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
@@ -173,12 +158,44 @@ module.exports = class betterfriendslist extends Plugin {
 												},
 											})
 										),
+								this.settings.get('addSearch') && // Search add but no functionally
+									React.createElement('div', {
+										className: 'flexChild-faoVW3 container-cMG81i small-2oHLgT',
+										style: { flex: '1 1 auto' },
+										children: React.createElement('div', {
+											className: 'inner-2P4tQO',
+											children: React.createElement('input', {
+												className: 'input-3Xdcic',
+												placeholder: 'Search',
+												value: searchQuery,
+												onChange: change => {
+													searchQuery = change.target.value;
+													this.rerenderList();
+												},
+											}),
+										}),
+									}),
 							]
 								.flat(10)
 								.filter(n => n),
 						})
 					),
 				];
+				children.props.children[0].props.children = [].concat(children.props.children[0].props.children).map(section => {
+					if (!section[0].key) return section;
+					let newSection = [].concat(section);
+					if (sortKey) {
+						newSection = newSection
+							.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status] }))
+							.sort((x, y) => {
+								let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
+									yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
+								return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+							});
+					}
+					if (sortReversed) newSection.reverse();
+					return newSection;
+				});
 				return children;
 			};
 			return res;

@@ -1,8 +1,11 @@
 # Better-Friends-List
 a port from bd with hopefully all the feature ported
 
+# V0.5.1
+YEEEEESSSSSSSS. Friends list now update without a click.
+
 # V0.5
-Settings added
+Settings added.
 
 # V0.4
 Sort your friends list by Status! (This button is buggy)
@@ -27,6 +30,6 @@ The tab bar is now working!
 [] - Get ready for release in powercord server???
 > [] - Base plugin and settings done
 
-> [] - Try to fix bug where sorting doesn't update until a click
+> ~~[x] - Try to fix bug where sorting doesn't update until a click~~
 
 > [] - Get previews done
