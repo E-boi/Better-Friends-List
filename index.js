@@ -8,32 +8,45 @@ const Settings = require('./Components/settings');
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.css');
-		let sortKey,
-			sortReversed,
-			searchQuery = '';
-		const statusSortOrder = {
-			online: 0,
-			streaming: 1,
-			idle: 2,
-			dnd: 3,
-			offline: 4,
-			invisible: 5,
-			unknown: 6,
-		};
+		this.contextMenus = ['DMUserContextMenu', 'GuildChannelUserContextMenu', 'UserGenericContextMenu', 'GroupDMUserContextMenu'];
 		powercord.api.settings.registerSettings(this.entityID, {
 			category: this.entityID,
 			label: 'Better Friends List',
 			render: Settings,
 		});
-		this.settings.get('mutualGuilds', true), this.settings.get('sortOptions', true), this.settings.get('totalAmount', true), this.settings.get('addSearch', true);
+		this.settings.get('mutualGuilds', true);
+		this.settings.get('sortOptions', true);
+		this.settings.get('totalAmount', true);
+		this.settings.get('addSearch', true);
 
+		this.FAV_FRIENDS = this.settings.get('favoriteFriends', []);
+		if (!this.FAV_FRIENDS) {
+			this.settings.set('favoriteFriends', []);
+		}
+
+		this._injectTabBar();
+		this._injectFriendRow();
+		this._injectPeopleList();
+
+		for (const module of this.contextMenus) {
+			this._injectContextMenu(module);
+		}
+	}
+
+	pluginWillUnload() {
+		this.contextMenus.forEach(menuName => uninject(`bfl-${menuName}`));
+		uninject('bfl-personList');
+		uninject('bfl-tabbar');
+		uninject('bfl-peoplelist');
+		powercord.api.settings.unregisterSettings(this.entityID);
+	}
+
+	_injectTabBar() {
+		const _this = this;
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
-		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
-		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
-
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			if (res.props['aria-label'] !== 'Friends') return res; // fix so only tab bar in friends list gets inject into
-			if (!this.settings.get('totalAmount')) return res;
+			if (!_this.settings.get('totalAmount')) return res;
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
@@ -60,7 +73,10 @@ module.exports = class betterfriendslist extends Plugin {
 				}
 			return res;
 		});
+	}
 
+	_injectFriendRow() {
+		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		inject('bfl-peoplelist', FriendRow, 'render', (_, res) => {
 			if (!this.settings.get('mutualGuilds')) return res;
 			if (typeof res.props.children === 'function') {
@@ -108,7 +124,68 @@ module.exports = class betterfriendslist extends Plugin {
 			}
 			return res;
 		});
+	}
 
+	_injectContextMenu(moduleName) {
+		const Menu = getModule(['MenuItem'], false);
+		const UserContextMenu = getModule(m => m.default?.displayName === moduleName, false);
+		const { getFriendIDs } = getModule(['getRelationships'], false);
+		const isFriend = id => {
+			const friendIDs = getFriendIDs();
+			return friendIDs.includes(id);
+		};
+		const isFavFriend = id => this.FAV_FRIENDS.includes(id);
+		inject(`bfl-${moduleName}`, UserContextMenu, 'default', ([{ user }], res) => {
+			if (isFriend(user.id)) {
+				let addFavButton;
+				if (!isFavFriend(user.id)) {
+					addFavButton = React.createElement(Menu.MenuItem, {
+						action: () => {
+							this.FAV_FRIENDS.push(user.id);
+							this.settings.set('favoriteFriends', this.FAV_FRIENDS);
+						},
+						id: 'bfl-AddfavFriend',
+						label: 'Add to favorite friends',
+					});
+				} else {
+					addFavButton = React.createElement(Menu.MenuItem, {
+						action: () => {
+							this.FAV_FRIENDS = this.FAV_FRIENDS.filter(a => a !== user.id);
+							this.settings.set('favoriteFriends', this.FAV_FRIENDS);
+						},
+						id: 'bfl-RemovefavFriend',
+						label: 'Remove favorite friend',
+					});
+				}
+
+				const userContextMenuItems = res.props.children.props.children;
+				const group = userContextMenuItems.find(child => Array.isArray(child.props?.children) && child.props.children.find(ch => ch?.props?.id === 'block'));
+
+				if (group) {
+					group.props.children.push(addFavButton);
+				} else {
+					userContextMenuItems.push(React.createElement(Menu.MenuGroup, null, addFavButton));
+				}
+			}
+			return res;
+		});
+		UserContextMenu.default.displayName = moduleName;
+	}
+
+	_injectPeopleList() {
+		let sortKey,
+			sortReversed,
+			searchQuery = '';
+		const statusSortOrder = {
+			online: 0,
+			streaming: 1,
+			idle: 2,
+			dnd: 3,
+			offline: 4,
+			invisible: 5,
+			unknown: 6,
+		};
+		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
 		inject('bfl-personList', PeopleListNoneLazy, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
@@ -118,7 +195,7 @@ module.exports = class betterfriendslist extends Plugin {
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',
-						{ className: 'title-30qZAO container-2ax-kl' },
+						{ className: 'bfl-headerTitle bfl-container' },
 						React.createElement(Flex, {
 							align: Flex.Align.CENTER,
 							children: [
@@ -127,6 +204,7 @@ module.exports = class betterfriendslist extends Plugin {
 									[
 										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
 										{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
+										{ key: 'isFavorite', label: 'FAVORITES' },
 									]
 										.filter(n => n)
 										.map(data =>
@@ -154,7 +232,7 @@ module.exports = class betterfriendslist extends Plugin {
 												},
 											})
 										),
-								this.settings.get('addSearch') && // Search add but no functionally
+								this.settings.get('addSearch') &&
 									React.createElement(Flex.Child, {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
@@ -183,9 +261,12 @@ module.exports = class betterfriendslist extends Plugin {
 							newSection = newSection.filter(user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1);
 						}
 						if (sortKey) {
-							newSection = newSection
-								.map(user => Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status] }))
-								.sort((x, y) => {
+							newSection = newSection.map(user =>
+								Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
+							);
+							if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
+							else
+								newSection.sort((x, y) => {
 									let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
 										yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
 									return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
@@ -200,13 +281,6 @@ module.exports = class betterfriendslist extends Plugin {
 			return res;
 		});
 		PeopleListNoneLazy.default.displayName = 'PeopleListSectionedNonLazy';
-	}
-
-	pluginWillUnload() {
-		uninject('bfl-personList');
-		uninject('bfl-tabbar');
-		uninject('bfl-peoplelist');
-		powercord.api.settings.unregisterSettings(this.entityID);
 	}
 
 	rerenderList() {

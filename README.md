@@ -1,5 +1,9 @@
 # Better-Friends-List
-a port from bd with hopefully all the feature ported
+a port from bd with has all the features ported and some more
+
+# V0.7
+Sort your friends by your favorites!!
+Might do something with this later
 
 # V0.6
 Search bar added!

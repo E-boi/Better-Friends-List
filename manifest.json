@@ -1,7 +1,7 @@
 {
 	"name": "Better Friends List",
-	"version": "0.6.1",
-	"description": "A port from bd hopefully with all the features soon.",
+	"version": "0.7.0",
+	"description": "Sort your friends list and see your mutuals guild next to your friends",
 	"author": "ugly-patootie#0611",
 	"license": "MIT"
 }
