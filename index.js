@@ -18,6 +18,7 @@ module.exports = class betterfriendslist extends Plugin {
 		this.settings.get('sortOptions', true);
 		this.settings.get('totalAmount', true);
 		this.settings.get('addSearch', true);
+		this.settings.get('showFavorite', true);
 
 		this.FAV_FRIENDS = this.settings.get('favoriteFriends', []);
 		if (!this.FAV_FRIENDS) {
@@ -136,6 +137,7 @@ module.exports = class betterfriendslist extends Plugin {
 		};
 		const isFavFriend = id => this.FAV_FRIENDS.includes(id);
 		inject(`bfl-${moduleName}`, UserContextMenu, 'default', ([{ user }], res) => {
+			if (!this.settings.get('showFavorite', true)) return res;
 			if (isFriend(user.id)) {
 				let addFavButton;
 				if (!isFavFriend(user.id)) {
@@ -200,11 +202,10 @@ module.exports = class betterfriendslist extends Plugin {
 							align: Flex.Align.CENTER,
 							children: [
 								React.createElement('div', { className: 'bfl-title', children: [title] }),
-								this.settings.get('sortOptions') &&
+								this.settings.get('sortOptions', true) &&
 									[
 										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
 										{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
-										{ key: 'isFavorite', label: 'FAVORITES' },
 									]
 										.filter(n => n)
 										.map(data =>
@@ -232,7 +233,31 @@ module.exports = class betterfriendslist extends Plugin {
 												},
 											})
 										),
-								this.settings.get('addSearch') &&
+								this.settings.get('showFavorite', true) &&
+									React.createElement('div', {
+										className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === 'isFavorite' && headers.headerCellSorted, headers.clickable].join(' '),
+										children: React.createElement('div', {
+											className: headers.headerCellContent,
+											children: [
+												'Favorite',
+												sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+											].filter(n => n),
+										}),
+										onClick: () => {
+											if (sortKey === 'isFavorite') {
+												if (!sortReversed) sortReversed = true;
+												else {
+													sortKey = null;
+													sortReversed = false;
+												}
+											} else {
+												sortKey = 'isFavorite';
+												sortReversed = false;
+											}
+											this.rerenderList();
+										},
+									}),
+								this.settings.get('addSearch', true) &&
 									React.createElement(Flex.Child, {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
