@@ -32,6 +32,8 @@ module.exports = class betterfriendslist extends Plugin {
 		for (const module of this.contextMenus) {
 			this._injectContextMenu(module);
 		}
+
+		require('./favoriteFriendsChannel').bind(this)();
 	}
 
 	pluginWillUnload() {
@@ -39,6 +41,7 @@ module.exports = class betterfriendslist extends Plugin {
 		uninject('bfl-personList');
 		uninject('bfl-tabbar');
 		uninject('bfl-peoplelist');
+		uninject('bfl-direct-messages');
 		powercord.api.settings.unregisterSettings(this.entityID);
 	}
 
@@ -145,6 +148,7 @@ module.exports = class betterfriendslist extends Plugin {
 						action: () => {
 							this.FAV_FRIENDS.push(user.id);
 							this.settings.set('favoriteFriends', this.FAV_FRIENDS);
+							if (this.favFriendsInstance) this.favFriendsInstance.forceUpdate();
 						},
 						id: 'bfl-AddfavFriend',
 						label: 'Add to favorite friends',
