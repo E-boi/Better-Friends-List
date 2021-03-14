@@ -24,7 +24,9 @@ a port from bd with has all the features ported and some more
 
 ## V0.8
 
-Will now put your favorite friends at the top of a dm's (this part of the code was from [betterfriends](https://github.com/powercord-community/betterfriends) I just tweaked it)
+Will now put your favorite friends at the top of a dm's (this part of the code was from [betterfriends](https://github.com/powercord-community/betterfriends) I just tweaked it).
+
+Not Recommend to use with betterfriends or just disable show favorite friends in better friends list settings.
 
 ## V0.7
 
