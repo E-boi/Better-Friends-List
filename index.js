@@ -8,6 +8,7 @@ const Settings = require('./Components/settings');
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.css');
+		this.peopleList = ['PeopleListSectionedNonLazy', 'PeopleListSectionedLazy'];
 		this.contextMenus = ['DMUserContextMenu', 'GuildChannelUserContextMenu', 'UserGenericContextMenu', 'GroupDMUserContextMenu'];
 		powercord.api.settings.registerSettings(this.entityID, {
 			category: this.entityID,
@@ -27,16 +28,20 @@ module.exports = class betterfriendslist extends Plugin {
 
 		this._injectTabBar();
 		this._injectFriendRow();
-		this._injectPeopleList();
 
 		for (const module of this.contextMenus) {
 			this._injectContextMenu(module);
+		}
+
+		for (const module of this.peopleList) {
+			this._injectPeopleList(module);
 		}
 
 		require('./favoriteFriendsChannel').bind(this)();
 	}
 
 	pluginWillUnload() {
+		this.peopleList.forEach(peopleList => uninject(`bfl-${peopleList}`));
 		this.contextMenus.forEach(menuName => uninject(`bfl-${menuName}`));
 		uninject('bfl-personList');
 		uninject('bfl-tabbar');
@@ -178,7 +183,7 @@ module.exports = class betterfriendslist extends Plugin {
 		UserContextMenu.default.displayName = moduleName;
 	}
 
-	_injectPeopleList() {
+	_injectPeopleList(moduleName) {
 		let sortKey,
 			sortReversed,
 			searchQuery = '';
@@ -191,16 +196,13 @@ module.exports = class betterfriendslist extends Plugin {
 			invisible: 5,
 			unknown: 6,
 		};
-		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
-		console.log('function called...');
-		inject('bfl-personList', PeopleListNoneLazy, 'default', (args, res) => {
-			console.log('starting injection');
+		const PeopleList = getModule(m => m.default?.displayName === moduleName, false);
+		inject(`bfl-${PeopleList}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				console.log('adding sorting buttons...');
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',
@@ -269,7 +271,7 @@ module.exports = class betterfriendslist extends Plugin {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
 												className: getModule(['input'], false).input,
-												placeholder: 'Search',
+												placeholder: i18n._proxyContext.messages.SEARCH,
 												value: searchQuery,
 												onChange: change => {
 													searchQuery = change.target.value;
@@ -312,7 +314,7 @@ module.exports = class betterfriendslist extends Plugin {
 			};
 			return res;
 		});
-		PeopleListNoneLazy.default.displayName = 'PeopleListSectionedNonLazy';
+		PeopleList.default.displayName = moduleName;
 	}
 
 	rerenderList() {
