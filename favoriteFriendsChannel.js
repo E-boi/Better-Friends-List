@@ -2,7 +2,7 @@
 const { inject } = require('powercord/injector');
 const { React, Flux, getModuleByDisplayName, getModule } = require('powercord/webpack');
 
-const FavoriteFriends = require('./components/FavoriteFriends');
+const FavoriteFriends = require('./Components/FavoriteFriends');
 
 module.exports = async function () {
 	const _this = this;
