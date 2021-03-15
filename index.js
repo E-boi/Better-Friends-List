@@ -192,12 +192,15 @@ module.exports = class betterfriendslist extends Plugin {
 			unknown: 6,
 		};
 		const PeopleListNoneLazy = getModule(m => m.default?.displayName === 'PeopleListSectionedNonLazy', false);
+		console.log('function called...');
 		inject('bfl-personList', PeopleListNoneLazy, 'default', (args, res) => {
+			console.log('starting injection');
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
+				console.log('adding sorting buttons...');
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',
