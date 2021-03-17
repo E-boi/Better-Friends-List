@@ -1,3 +1,5 @@
+# If I don't tell you to download this please don't
+
 # Better-Friends-List
 
 a port from bd with has all the features ported and some more
