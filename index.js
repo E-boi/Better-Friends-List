@@ -203,123 +203,122 @@ module.exports = class betterfriendslist extends Plugin {
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				if (children.type.render) {
-					const childrenRender2 = children.type.render;
-					children.type.render = (args, ...res) => {
-						console.log(args, res);
-						const children2 = childrenRender2(args, res);
-						console.log(children2);
-						return children2;
-					};
-				}
-				console.log(children);
-				// children.props.children[0].props.children[0] = [
-				// 	React.createElement(
-				// 		'div',
-				// 		{ className: 'bfl-headerTitle bfl-container' },
-				// 		React.createElement(Flex, {
-				// 			align: Flex.Align.CENTER,
-				// 			children: [
-				// 				React.createElement('div', { className: 'bfl-title', children: [title] }),
-				// 				this.settings.get('sortOptions', true) &&
-				// 					[
-				// 						{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
-				// 						{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
-				// 					]
-				// 						.filter(n => n)
-				// 						.map(data =>
-				// 							React.createElement('div', {
-				// 								className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === data.key && headers.headerCellSorted, headers.clickable].join(' '),
-				// 								children: React.createElement('div', {
-				// 									className: headers.headerCellContent,
-				// 									children: [
-				// 										data.label,
-				// 										sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
-				// 									].filter(n => n),
-				// 								}),
-				// 								onClick: () => {
-				// 									if (sortKey === data.key) {
-				// 										if (!sortReversed) sortReversed = true;
-				// 										else {
-				// 											sortKey = null;
-				// 											sortReversed = false;
-				// 										}
-				// 									} else {
-				// 										sortKey = data.key;
-				// 										sortReversed = false;
-				// 									}
-				// 									this.rerenderList();
-				// 								},
-				// 							})
-				// 						),
-				// 				this.settings.get('showFavorite', true) &&
-				// 					React.createElement('div', {
-				// 						className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === 'isFavorite' && headers.headerCellSorted, headers.clickable].join(' '),
-				// 						children: React.createElement('div', {
-				// 							className: headers.headerCellContent,
-				// 							children: [
-				// 								'Favorite',
-				// 								sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
-				// 							].filter(n => n),
-				// 						}),
-				// 						onClick: () => {
-				// 							if (sortKey === 'isFavorite') {
-				// 								if (!sortReversed) sortReversed = true;
-				// 								else {
-				// 									sortKey = null;
-				// 									sortReversed = false;
-				// 								}
-				// 							} else {
-				// 								sortKey = 'isFavorite';
-				// 								sortReversed = false;
-				// 							}
-				// 							this.rerenderList();
-				// 						},
-				// 					}),
-				// 				this.settings.get('addSearch', true) &&
-				// 					React.createElement(Flex.Child, {
-				// 						children: React.createElement('div', {
-				// 							children: React.createElement('input', {
-				// 								className: getModule(['input'], false).input,
-				// 								placeholder: i18n._proxyContext.messages.SEARCH,
-				// 								value: searchQuery,
-				// 								onChange: change => {
-				// 									searchQuery = change.target.value;
-				// 									this.rerenderList();
-				// 								},
-				// 							}),
-				// 						}),
-				// 					}),
-				// 			]
-				// 				.flat(10)
-				// 				.filter(n => n),
-				// 		})
-				// 	),
-				// ];
-				// children.props.children[0].props.children = [].concat(children.props.children[0].props.children).map(section => {
-				// 	if (!section[0].key) return section;
-				// 	let newSection = [].concat(section);
-				// 	if (sortKey || searchQuery) {
-				// 		if (searchQuery) {
-				// 			let usedSearchQuery = searchQuery.toLowerCase();
-				// 			newSection = newSection.filter(user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1);
-				// 		}
-				// 		if (sortKey) {
-				// 			newSection = newSection.map(user =>
-				// 				Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
-				// 			);
-				// 			if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
-				// 			else
-				// 				newSection.sort((x, y) => {
-				// 					let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
-				// 						yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
-				// 					return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
-				// 				});
-				// 		}
+				// 	if (children.type.render) {
+				// 		const childrenRender2 = children.type.render;
+				// 		children.type.render = (args, ...res) => {
+				// 			console.log(args, res);
+				// 			const children2 = childrenRender2(args, res);
+				// 			console.log(children2);
+				// 			return children2;
+				// 		};
 				// 	}
-				// 	if (sortReversed) newSection.reverse();
-				// 	return newSection;
-				// });
+				children.props.children[0].props.children[0] = [
+					React.createElement(
+						'div',
+						{ className: 'bfl-headerTitle bfl-container' },
+						React.createElement(Flex, {
+							align: Flex.Align.CENTER,
+							children: [
+								React.createElement('div', { className: 'bfl-title', children: [title] }),
+								this.settings.get('sortOptions', true) &&
+									[
+										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
+										{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
+									]
+										.filter(n => n)
+										.map(data =>
+											React.createElement('div', {
+												className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === data.key && headers.headerCellSorted, headers.clickable].join(' '),
+												children: React.createElement('div', {
+													className: headers.headerCellContent,
+													children: [
+														data.label,
+														sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+													].filter(n => n),
+												}),
+												onClick: () => {
+													if (sortKey === data.key) {
+														if (!sortReversed) sortReversed = true;
+														else {
+															sortKey = null;
+															sortReversed = false;
+														}
+													} else {
+														sortKey = data.key;
+														sortReversed = false;
+													}
+													this.rerenderList();
+												},
+											})
+										),
+								this.settings.get('showFavorite', true) &&
+									React.createElement('div', {
+										className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === 'isFavorite' && headers.headerCellSorted, headers.clickable].join(' '),
+										children: React.createElement('div', {
+											className: headers.headerCellContent,
+											children: [
+												'Favorite',
+												sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+											].filter(n => n),
+										}),
+										onClick: () => {
+											if (sortKey === 'isFavorite') {
+												if (!sortReversed) sortReversed = true;
+												else {
+													sortKey = null;
+													sortReversed = false;
+												}
+											} else {
+												sortKey = 'isFavorite';
+												sortReversed = false;
+											}
+											this.rerenderList();
+										},
+									}),
+								this.settings.get('addSearch', true) &&
+									React.createElement(Flex.Child, {
+										children: React.createElement('div', {
+											children: React.createElement('input', {
+												className: getModule(['input'], false).input,
+												placeholder: i18n._proxyContext.messages.SEARCH,
+												value: searchQuery,
+												onChange: change => {
+													searchQuery = change.target.value;
+													this.rerenderList();
+												},
+											}),
+										}),
+									}),
+							]
+								.flat(10)
+								.filter(n => n),
+						})
+					),
+				];
+				children.props.children[0].props.children = [].concat(children.props.children[0].props.children).map(section => {
+					if (!section[0].key) return section;
+					let newSection = [].concat(section);
+					if (sortKey || searchQuery) {
+						if (searchQuery) {
+							let usedSearchQuery = searchQuery.toLowerCase();
+							newSection = newSection.filter(user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1);
+						}
+						if (sortKey) {
+							newSection = newSection.map(user =>
+								Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
+							);
+							if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
+							else
+								newSection.sort((x, y) => {
+									let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
+										yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
+									return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+								});
+						}
+					}
+					if (sortReversed) newSection.reverse();
+					return newSection;
+				});
 				return children;
 			};
 			return res;
