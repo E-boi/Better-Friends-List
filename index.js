@@ -201,12 +201,14 @@ module.exports = class betterfriendslist extends Plugin {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
+			console.log(args[0].statusSections);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
 				if (!children.props.children) {
 					const childrenRender2 = children.type.render;
 					children.type.render = (args, ...res) => {
 						const children2 = childrenRender2(args, res);
+						console.log(children2.props.children.props.children.props.children);
 						children2.props.children.props.children.props.children[1] = [
 							React.createElement(
 								'div',
