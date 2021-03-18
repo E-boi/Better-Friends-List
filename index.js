@@ -201,17 +201,15 @@ module.exports = class betterfriendslist extends Plugin {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
-			console.log(args[0].statusSections);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				if (children.props.sectionHeight) {
-					const childrenRender2 = children.props.sectionHeight;
-					children.props.sectionHeight = (...args) => {
-						const children2 = childrenRender2(...args);
-						console.log(children2);
-						return children2;
-					};
-				}
+				// if (children.props.sectionHeight) {
+				// 	const childrenRender2 = children.props.sectionHeight;
+				// 	children.props.sectionHeight = (...args) => {
+				// 		const children2 = childrenRender2(...args);
+				// 		return children2;
+				// 	};
+				// }
 				if (!children.props.children) {
 					const childrenRender2 = children.type.render;
 					children.type.render = (args, ...res) => {
