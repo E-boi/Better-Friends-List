@@ -55,7 +55,7 @@ module.exports = class betterfriendslist extends Plugin {
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			if (res.props['aria-label'] !== 'Friends') return res; // fix so only tab bar in friends list gets inject into
-			if (!_this.settings.get('totalAmount')) return res;
+			if (!_this.settings.get('totalAmount', true)) return res;
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
@@ -87,7 +87,7 @@ module.exports = class betterfriendslist extends Plugin {
 	_injectFriendRow() {
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		inject('bfl-peoplelist', FriendRow, 'render', (_, res) => {
-			if (!this.settings.get('mutualGuilds')) return res;
+			if (!this.settings.get('mutualGuilds', true)) return res;
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					const childrenRender = res.props.children;
