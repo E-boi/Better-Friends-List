@@ -44,6 +44,7 @@ module.exports = async function () {
 				selected,
 				status: statusStore.getStatus(userId),
 				isMobile: statusStore.isMobileOnline(userId),
+				isTyping: getModule(['isTyping'], false).isTyping(channelStore.getDMFromUserId(userId), userId),
 				activities: activityStore.getActivities(userId),
 				isFavFriends: true,
 			};
