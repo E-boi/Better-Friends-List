@@ -1,7 +1,13 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { findInTree } = require('powercord/util');
-const { getModule, getModuleByDisplayName, constants, React, i18n } = require('powercord/webpack');
+const {
+	getModule,
+	getModuleByDisplayName,
+	constants,
+	React,
+	i18n: { Messages },
+} = require('powercord/webpack');
 const { Tooltip, Flex, Icon } = require('powercord/components');
 const Settings = require('./Components/settings');
 
@@ -54,14 +60,14 @@ module.exports = class betterfriendslist extends Plugin {
 		const _this = this;
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
-			if (res.props['aria-label'] !== 'Friends') return res; // fix so only tab bar in friends list gets inject into
+			if (res.props['aria-label'] !== Messages.FRIENDS) return res; // fix so only tab bar in friends list gets inject into
 			if (!_this.settings.get('totalAmount')) return res;
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
 			for (let id in relationships) relationshipCount[relationships[id]]++;
 			for (let child of res.props.children)
-				if (child && child.props.id !== 'ADD_FRIEND') {
+				if (child && child.props.id !== Messages.ADD_FRIEND) {
 					const newChildren = [child.props.children].flat().filter(child => findInTree(child, 'type.displayName') != 'NumberBadge');
 					switch (child.props.id) {
 						case 'ALL':
@@ -222,8 +228,8 @@ module.exports = class betterfriendslist extends Plugin {
 								React.createElement('div', { className: 'bfl-title', children: [title] }),
 								this.settings.get('sortOptions', true) &&
 									[
-										{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
-										{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
+										{ key: 'usernameLower', label: Messages.FRIENDS_COLUMN_NAME },
+										{ key: 'statusIndex', label: Messages.FRIENDS_COLUMN_STATUS },
 									]
 										.filter(n => n)
 										.map(data =>
@@ -280,7 +286,7 @@ module.exports = class betterfriendslist extends Plugin {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
 												className: getModule(['input'], false).input,
-												placeholder: i18n._proxyContext.messages.SEARCH,
+												placeholder: Messages.SEARCH,
 												value: searchQuery,
 												onChange: change => {
 													searchQuery = change.target.value;
