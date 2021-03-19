@@ -317,6 +317,7 @@ module.exports = class betterfriendslist extends Plugin {
 							}
 							return newSection;
 						});
+						children2.props.children.props.children.props.children[2] = users
 						return children2;
 					};
 				}
