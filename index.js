@@ -298,13 +298,13 @@ module.exports = class betterfriendslist extends Plugin {
 							users.push(section);
 							return section;
 						});
-						console.log(users);
-						// users.map(section => {
-						// 	console.log(section);
-						// 	if (section[0].key) return section;
-						// 	const newSection = [section];
-						// 	return section;
-						// });
+						users.map(section => {
+							console.log(section);
+							//if (section[0].key) return section;
+							//const newSection = [section];
+							console.log(section);
+							return section;
+						});
 						return children2;
 					};
 				}
