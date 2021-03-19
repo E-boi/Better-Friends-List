@@ -203,13 +203,6 @@ module.exports = class betterfriendslist extends Plugin {
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				// if (children.props.sectionHeight) {
-				// 	const childrenRender2 = children.props.sectionHeight;
-				// 	children.props.sectionHeight = (...args) => {
-				// 		const children2 = childrenRender2(...args);
-				// 		return children2;
-				// 	};
-				// }
 				if (!children.props.children) {
 					const childrenRender2 = children.type.render;
 					children.type.render = (args, ...res) => {
@@ -297,92 +290,24 @@ module.exports = class betterfriendslist extends Plugin {
 								})
 							),
 						];
+						if (!children2.props.children.props.children.props.children[2]) return children2;
+						const users = [];
+						children2.props.children.props.children.props.children.map(section => {
+							// getting ready to sort
+							if (!section.props?.status) return section;
+							users.push(section);
+							return section;
+						});
+						console.log(users);
+						// users.map(section => {
+						// 	console.log(section);
+						// 	if (section[0].key) return section;
+						// 	const newSection = [section];
+						// 	return section;
+						// });
 						return children2;
 					};
 				}
-				// children.props.children[0].props.children[0] = [
-				// 	React.createElement(
-				// 		'div',
-				// 		{ className: 'bfl-headerTitle bfl-container' },
-				// 		React.createElement(Flex, {
-				// 			align: Flex.Align.CENTER,
-				// 			children: [
-				// 				React.createElement('div', { className: 'bfl-title', children: [title] }),
-				// 				this.settings.get('sortOptions', true) &&
-				// 					[
-				// 						{ key: 'usernameLower', label: i18n._proxyContext.messages.FRIENDS_COLUMN_NAME },
-				// 						{ key: 'statusIndex', label: i18n._proxyContext.messages.FRIENDS_COLUMN_STATUS },
-				// 					]
-				// 						.filter(n => n)
-				// 						.map(data =>
-				// 							React.createElement('div', {
-				// 								className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === data.key && headers.headerCellSorted, headers.clickable].join(' '),
-				// 								children: React.createElement('div', {
-				// 									className: headers.headerCellContent,
-				// 									children: [
-				// 										data.label,
-				// 										sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
-				// 									].filter(n => n),
-				// 								}),
-				// 								onClick: () => {
-				// 									if (sortKey === data.key) {
-				// 										if (!sortReversed) sortReversed = true;
-				// 										else {
-				// 											sortKey = null;
-				// 											sortReversed = false;
-				// 										}
-				// 									} else {
-				// 										sortKey = data.key;
-				// 										sortReversed = false;
-				// 									}
-				// 									this.rerenderList();
-				// 								},
-				// 							})
-				// 						),
-				// 				this.settings.get('showFavorite', true) &&
-				// 					React.createElement('div', {
-				// 						className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === 'isFavorite' && headers.headerCellSorted, headers.clickable].join(' '),
-				// 						children: React.createElement('div', {
-				// 							className: headers.headerCellContent,
-				// 							children: [
-				// 								'Favorite',
-				// 								sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
-				// 							].filter(n => n),
-				// 						}),
-				// 						onClick: () => {
-				// 							if (sortKey === 'isFavorite') {
-				// 								if (!sortReversed) sortReversed = true;
-				// 								else {
-				// 									sortKey = null;
-				// 									sortReversed = false;
-				// 								}
-				// 							} else {
-				// 								sortKey = 'isFavorite';
-				// 								sortReversed = false;
-				// 							}
-				// 							this.rerenderList();
-				// 						},
-				// 					}),
-				// 				this.settings.get('addSearch', true) &&
-				// 					React.createElement(Flex.Child, {
-				// 						children: React.createElement('div', {
-				// 							children: React.createElement('input', {
-				// 								className: getModule(['input'], false).input,
-				// 								placeholder: i18n._proxyContext.messages.SEARCH,
-				// 								value: searchQuery,
-				// 								onChange: change => {
-				// 									searchQuery = change.target.value;
-				// 									this.rerenderList();
-				// 								},
-				// 							}),
-				// 						}),
-				// 					}),
-				// 			]
-				// 				.flat(10)
-				// 				.filter(n => n),
-				// 		})
-				// 	),
-				// ];
 				// children.props.children[0].props.children = [].concat(children.props.children[0].props.children).map(section => {
 				// 	if (!section[0].key) return section;
 				// 	let newSection = [].concat(section);
