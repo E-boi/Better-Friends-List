@@ -196,6 +196,7 @@ module.exports = class betterfriendslist extends Plugin {
 			invisible: 5,
 			unknown: 6,
 		};
+		['apple', 'pie'].forEach((item, idx) => console.log(item, idx))
 		const PeopleList = getModule(m => m.default?.displayName === moduleName, false);
 		inject(`bfl-${moduleName}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
@@ -317,7 +318,11 @@ module.exports = class betterfriendslist extends Plugin {
 							}
 							return newSection;
 						});
-						children2.props.children.props.children.props.children[2] = users
+						children2.props.children.props.children.props.children.map((thing, idx) => {
+							if (idx === 1 || idx === 0) return thing;
+							thing = users[2 + idx]
+							return thing
+						})
 						console.log(children2.props.children.props.children.props.children)
 						return children2;
 					};
