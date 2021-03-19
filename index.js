@@ -275,7 +275,7 @@ module.exports = class betterfriendslist extends Plugin {
 												children: React.createElement('div', {
 													children: React.createElement('input', {
 														className: getModule(['input'], false).input,
-														placeholder: Messages._proxyContext.messages.SEARCH,
+														placeholder: Messages.SEARCH,
 														value: searchQuery,
 														onChange: change => {
 															searchQuery = change.target.value;
