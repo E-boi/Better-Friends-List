@@ -318,6 +318,7 @@ module.exports = class betterfriendslist extends Plugin {
 							return newSection;
 						});
 						children2.props.children.props.children.props.children[2] = users
+						console.log(children2.props.children.props.children.props.children)
 						return children2;
 					};
 				}
