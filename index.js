@@ -299,11 +299,23 @@ module.exports = class betterfriendslist extends Plugin {
 							return section;
 						});
 						users.map(section => {
-							console.log(section);
-							//if (section[0].key) return section;
-							//const newSection = [section];
-							console.log(section);
-							return section;
+							if (section.key) return section;
+							const newSection = section;
+							if (sortKey) {
+								if (sortKey) {
+									newSection = newSection.map(user =>
+										Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
+									);
+									if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
+									else
+										newSection.sort((x, y) => {
+											let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
+												yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
+											return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+										});
+								}
+							}
+							return newSection;
 						});
 						return children2;
 					};
