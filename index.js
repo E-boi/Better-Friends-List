@@ -196,21 +196,42 @@ module.exports = class betterfriendslist extends Plugin {
 			invisible: 5,
 			unknown: 6,
 		};
-		['apple', 'pie'].forEach((item, idx) => console.log(item, idx))
 		const PeopleList = getModule(m => m.default?.displayName === moduleName, false);
 		inject(`bfl-${moduleName}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
+				const users = [];
 				let children = childrenRender(...args);
-				// if (children.props.renderRow) {
-				// 	const childrenRender2 = children.props.renderRow
-				// 	children.props.renderRow = (...args) => {
-				// 		console.log(args);
-				// 		return childrenRender2(...args);
-				// 	}
-				// }
+				if (children.props.renderRow) {
+					const childrenRender2 = children.props.renderRow
+					children.props.renderRow = (...args) => {
+						const children2 = childrenRender2(...args);
+						users.push(children2);
+						return children2;
+					}
+					users.map(section => {
+						if (section.key) return section;
+						const newSection = section;
+						if (sortKey) {
+							if (sortKey) {
+								console.log('sorting...');
+								newSection = newSection.map(user =>
+									Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
+								);
+								if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
+								else
+									newSection.sort((x, y) => {
+										let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
+											yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
+										return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
+									});
+							}
+						}
+						return newSection;
+					});
+				}
 				if (!children.props.children) {
 					const childrenRender2 = children.type.render;
 					children.type.render = (args, ...res) => {
@@ -298,39 +319,11 @@ module.exports = class betterfriendslist extends Plugin {
 								})
 							),
 						];
-						// if (!children2.props.children.props.children.props.children[2]) return children2;
-						// const users = [];
-						// children2.props.children.props.children.props.children.map(section => {
-						// 	// getting ready to sort
-						// 	if (!section.props?.status) return section;
-						// 	users.push(section);
-						// 	return section;
-						// });
-						// users.map(section => {
-						// 	if (section.key) return section;
-						// 	const newSection = section;
-						// 	if (sortKey) {
-						// 		if (sortKey) {
-						// 			newSection = newSection.map(user =>
-						// 				Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
-						// 			);
-						// 			if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
-						// 			else
-						// 				newSection.sort((x, y) => {
-						// 					let xValue = sortKey === 'statusIndex' ? x[sortKey] : x.props[sortKey],
-						// 						yValue = sortKey === 'statusIndex' ? y[sortKey] : y.props[sortKey];
-						// 					return xValue < yValue ? -1 : xValue > yValue ? 1 : 0;
-						// 				});
-						// 		}
-						// 	}
-						// 	return newSection;
-						// });
-						// children2.props.children.props.children.props.children.map((thing, idx) => {
-						// 	if (idx === 1 || idx === 0) return thing;
-						// 	thing = users[2 + idx]
-						// 	return thing
-						// })
-						// console.log(children2.props.children.props.children.props.children)
+						children2.props.children.props.children.props.children.map((thing, idx) => {
+							if (idx === 1 || idx === 0) return thing;
+							thing = users[2 + idx];
+							return thing;
+						})
 						return children2;
 					};
 				}
