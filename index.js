@@ -204,13 +204,13 @@ module.exports = class betterfriendslist extends Plugin {
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				if (children.props.renderRow) {
-					const childrenRender2 = children.props.renderRow
-					children.props.renderRow = (...args) => {
-						console.log(args);
-						return childrenRender2(...args);
-					}
-				}
+				// if (children.props.renderRow) {
+				// 	const childrenRender2 = children.props.renderRow
+				// 	children.props.renderRow = (...args) => {
+				// 		console.log(args);
+				// 		return childrenRender2(...args);
+				// 	}
+				// }
 				if (!children.props.children) {
 					const childrenRender2 = children.type.render;
 					children.type.render = (args, ...res) => {
