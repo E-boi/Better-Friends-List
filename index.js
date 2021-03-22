@@ -327,11 +327,11 @@ module.exports = class betterfriendslist extends Plugin {
 								})
 							),
 						];
-						children2.props.children.props.children.props.children.map((thing, idx) => {
-							if (idx === 1 || idx === 0) return thing;
-							thing = users[2 + idx];
-							return thing;
-						});
+						// children2.props.children.props.children.props.children.map((thing, idx) => {
+						// 	if (idx === 1 || idx === 0) return thing;
+						// 	thing = users[2 + idx];
+						// 	return thing;
+						// });
 						return children2;
 					};
 				}
