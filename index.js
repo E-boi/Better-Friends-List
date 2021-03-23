@@ -209,15 +209,7 @@ module.exports = class betterfriendslist extends Plugin {
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
-				// 	if (children.type.render) {
-				// 		const childrenRender2 = children.type.render;
-				// 		children.type.render = (args, ...res) => {
-				// 			console.log(args, res);
-				// 			const children2 = childrenRender2(args, res);
-				// 			console.log(children2);
-				// 			return children2;
-				// 		};
-				// 	}
+				if (!children.props.children) return children;
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',

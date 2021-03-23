@@ -2,6 +2,8 @@
 
 a port from bd with has all the features ported and some more
 
+**Disclaimer if you have 100+ friends the sorting system will not work**
+
 # Todos:
 
 ~~[x] - Add mutual guilds in friend menu~~
