@@ -2,7 +2,9 @@
 
 a port from bd with has all the features ported and some more
 
-**Disclaimer if you have 100+ friends the sorting system will not work**
+**Disclaimer**
+
+if you have 100+ friends the sorting system will not work. But if want to try to make it work the module to get it working is `PeopleListSectionedLazy` all i need is somewhere in there to have ALL the displaying friends.
 
 # Todos:
 
@@ -14,13 +16,13 @@ a port from bd with has all the features ported and some more
 
 ~~[x] - Add some settings~~
 
-[] - Get ready for release in powercord server???
+[x] - Get ready for release in powercord server???
 
 > ~~[x] - Base plugin and settings done~~
 
 > ~~[x] - Try to fix bug where sorting doesn't update until a click~~
 
-> [] - Get previews done
+> [x] - Get preview done
 
 # Changelogs
 
