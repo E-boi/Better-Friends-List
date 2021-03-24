@@ -331,7 +331,6 @@ module.exports = class betterfriendslist extends Plugin {
 
 	createBadge(amount, text) {
 		let badge = React.createElement(getModule(['NumberBadge'], false).NumberBadge, {
-			className: getModule(['badge'], false).badge,
 			count: amount,
 			style: { marginLeft: 6 },
 		});
