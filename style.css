@@ -9,6 +9,10 @@
 	padding: 0 12px;
 }
 
+.bfl-down {
+	margin-top: 2px;
+}
+
 .bfl-container {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;

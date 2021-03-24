@@ -71,17 +71,29 @@ module.exports = class betterfriendslist extends Plugin {
 					const newChildren = [child.props.children].flat().filter(child => findInTree(child, 'type.displayName') != 'NumberBadge');
 					switch (child.props.id) {
 						case 'ALL':
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.FRIEND]));
+							newChildren[0] += ` - ${relationshipCount[constants.RelationshipTypes.FRIEND]}`;
 							break;
 						case 'ONLINE':
-							newChildren.push(this.createBadge(getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()));
+							newChildren[0] += ` - ${getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()}`;
+							//newChildren.push(this.createBadge(getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()));
 							break;
 						case 'PENDING':
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_INCOMING], 'Incoming'));
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING], 'Outgoing'));
+							newChildren[0] += ' - ';
+							newChildren.splice(1, 1, React.createElement(Tooltip, {
+									text: 'Incoming',
+									position: 'bottom',
+									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[8], height: '20' }),
+								})
+							);
+							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
+							newChildren.splice(3, 1, React.createElement(Tooltip, { 
+								text: 'Outgoing', 
+								position: 'bottom', 
+								children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[13] }) }));
+							newChildren.splice(4, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
 							break;
 						case 'BLOCKED':
-							newChildren.push(this.createBadge(relationshipCount[constants.RelationshipTypes.BLOCKED]));
+							newChildren[0] += ` - ${relationshipCount[constants.RelationshipTypes.BLOCKED]}`;
 							break;
 					}
 					child.props.children = newChildren;
