@@ -8,6 +8,8 @@ if you have 100+ friends the sorting system will not work. But if want to try to
 
 # Todos:
 
+[] - get sorting system working for poeple who have 100+ friends
+
 ~~[x] - Add mutual guilds in friend menu~~
 
 ~~[x] - Add a favorite friends sorting system~~
@@ -16,7 +18,7 @@ if you have 100+ friends the sorting system will not work. But if want to try to
 
 ~~[x] - Add some settings~~
 
-[x] - Get ready for release in powercord server???
+~~[x] - Get ready for release in powercord server???~~
 
 > ~~[x] - Base plugin and settings done~~
 
@@ -25,6 +27,10 @@ if you have 100+ friends the sorting system will not work. But if want to try to
 > [x] - Get preview done
 
 # Changelogs
+
+## V1
+
+It's now released!!!
 
 ## V0.8
 
