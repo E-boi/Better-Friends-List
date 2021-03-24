@@ -8,7 +8,7 @@ if you have 100+ friends the sorting system will not work. But if want to try to
 
 # Todos:
 
-- [] get sorting system working for poeple who have 100+ friends
+- [ ] get sorting system working for poeple who have 100+ friends
 
 - ~~[x] Add mutual guilds in friend menu~~
 
