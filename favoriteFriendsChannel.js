@@ -1,6 +1,7 @@
 // ripped from https://github.com/powercord-community/betterfriends/blob/master/modules/FavoriteFriendChannel.js just taken out the parts I don't plan to need
 const { inject } = require('powercord/injector');
 const { React, Flux, getModuleByDisplayName, getModule } = require('powercord/webpack');
+const { AsyncComponent } = require('powercord/components');
 
 const FavoriteFriends = require('./Components/FavoriteFriends');
 
@@ -12,6 +13,8 @@ module.exports = async function () {
 	const channelStore = await getModule(['getChannel', 'getDMFromUserId']);
 	const activityStore = await getModule(['getPrimaryActivity']);
 	const statusStore = await getModule(['getStatus']);
+	const typingStore = await getModule(['isTyping']);
+	const channelOpen = await getModule(['openPrivateChannel']);
 	const classes = {
 		...(await getModule(['channel', 'closeButton'])),
 		...(await getModule(['avatar', 'muted', 'selected'])),
@@ -22,10 +25,26 @@ module.exports = async function () {
 	const ConnectedPrivateChannel = Flux.connectStores(
 		[userStore, channelStore, activityStore, statusStore, powercord.api.settings.store],
 		({ userId, currentSelectedChannel }) => {
-			const channelId = channelStore.getDMFromUserId(userId);
-			const selected = currentSelectedChannel === channelId;
-			const user = userStore.getUser(userId) || { id: '0', username: '???', isSystemUser: () => false, getAvatarURL: () => null, isSystemDM: () => false };
-
+			let channelId = channelStore.getDMFromUserId(userId);
+			let selected = currentSelectedChannel === channelId;
+			const user = userStore.getUser(userId) || {
+				id: '0',
+				username: '???',
+				isSystemUser: () => false,
+				getAvatarURL: () => null,
+				isSystemDM: () => false,
+			};
+			if (!channelId) {
+				AsyncComponent.from(channelOpen.openPrivateChannel(userId));
+				channelId = channelStore.getDMFromUserId(userId);
+				selected = currentSelectedChannel === channelId;
+				if (!powercord.api.notices.toasts[`OpenChannel-${userId}`])
+					powercord.api.notices.sendToast(`OpenChannel-${userId}`, {
+						header: 'Opening...',
+						timeout: 5000,
+						content: `Opening ${user.username}!`,
+					});
+			}
 			const channel = channelId
 				? channelStore.getChannel(channelId)
 				: {
@@ -44,7 +63,7 @@ module.exports = async function () {
 				selected,
 				status: statusStore.getStatus(userId),
 				isMobile: statusStore.isMobileOnline(userId),
-				isTyping: getModule(['isTyping'], false).isTyping(channelStore.getDMFromUserId(userId), userId),
+				isTyping: typingStore.isTyping(channelStore.getDMFromUserId(userId), userId),
 				activities: activityStore.getActivities(userId),
 				isFavFriends: true,
 			};
@@ -66,7 +85,13 @@ module.exports = async function () {
 			...res.props.children,
 			// Favorite Friends
 			() =>
-				React.createElement(FavoriteFriends, { classes, ConnectedPrivateChannel, FAV_FRIENDS: this.FAV_FRIENDS, selectedChannelId: res.props.selectedChannelId, _this }),
+				React.createElement(FavoriteFriends, {
+					classes,
+					ConnectedPrivateChannel,
+					FAV_FRIENDS: this.FAV_FRIENDS,
+					selectedChannelId: res.props.selectedChannelId,
+					_this,
+				}),
 		];
 
 		return res;
