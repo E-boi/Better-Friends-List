@@ -61,6 +61,7 @@ module.exports = async function () {
 				user,
 				channel,
 				selected,
+				channelName: user.username,
 				status: statusStore.getStatus(userId),
 				isMobile: statusStore.isMobileOnline(userId),
 				isTyping: typingStore.isTyping(channelStore.getDMFromUserId(userId), userId),
