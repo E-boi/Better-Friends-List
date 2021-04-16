@@ -89,7 +89,7 @@ module.exports = class betterfriendslist extends Plugin {
 							newChildren.splice(3, 1, React.createElement(Tooltip, { 
 								text: 'Outgoing', 
 								position: 'bottom', 
-								children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[13] }) }));
+								children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[12] }) }));
 							newChildren.splice(4, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
 							break;
 						case 'BLOCKED':
@@ -243,7 +243,7 @@ module.exports = class betterfriendslist extends Plugin {
 													className: headers.headerCellContent,
 													children: [
 														data.label,
-														sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+														sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 12] }),
 													].filter(n => n),
 												}),
 												onClick: () => {
@@ -268,7 +268,7 @@ module.exports = class betterfriendslist extends Plugin {
 											className: headers.headerCellContent,
 											children: [
 												'Favorite',
-												sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 10 : 9] }),
+												sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 12] }),
 											].filter(n => n),
 										}),
 										onClick: () => {
