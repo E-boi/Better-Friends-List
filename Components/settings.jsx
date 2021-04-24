@@ -8,7 +8,7 @@ module.exports = class betterfriendsSet extends React.PureComponent {
 	}
 
 	render() {
-		const { getSetting, toggleSetting, updateSetting } = this.props;
+		const { getSetting, toggleSetting } = this.props;
 		return (
 			<>
 				<SwitchItem value={getSetting('mutualGuilds', true)} onChange={() => toggleSetting('mutualGuilds')}>
@@ -25,6 +25,9 @@ module.exports = class betterfriendsSet extends React.PureComponent {
 				</SwitchItem>
 				<SwitchItem value={getSetting('showFavorite', true)} onChange={() => toggleSetting('showFavorite')}>
 					Show favorite friends
+				</SwitchItem>
+				<SwitchItem value={getSetting('friend_grid', true)} onChange={() => toggleSetting('friend_grid')}>
+					Show friend list in grid
 				</SwitchItem>
 			</>
 		);

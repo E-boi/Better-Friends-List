@@ -312,7 +312,7 @@ module.exports = class betterfriendslist extends Plugin {
 											this.rerenderList();
 										},
 									}),
-								this.settings.get('addSearch', true) && [
+								this.settings.get('addSearch', true) &&
 									React.createElement(Flex.Child, {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
@@ -326,19 +326,6 @@ module.exports = class betterfriendslist extends Plugin {
 											}),
 										}),
 									}),
-									React.createElement(
-										SwitchItem,
-										{
-											className: 'switchButtonBFL',
-											value: this.settings.get('friend_grid', true),
-											onChange: () => {
-												this.settings.set('friend_grid', !this.settings.get('friend_grid', true));
-												document.querySelector('.peopleList-3c4jOR').classList.toggle('grid');
-											},
-										},
-										'Show list in grid'
-									),
-								],
 							]
 								.flat(10)
 								.filter(n => n),
