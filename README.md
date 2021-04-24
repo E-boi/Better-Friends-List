@@ -2,6 +2,8 @@
 
 a port from bd with has all the features ported and some more
 
+Thanks [Doggybootsy](https://github.com/doggybootsy) for the friend grid css.
+
 **Disclaimer**
 
 if you have 100+ friends the sorting system will not work. But if want to try to make it work the module to get it working is `PeopleListSectionedLazy` all i need is somewhere in there to have ALL the displaying friends.

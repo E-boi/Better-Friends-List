@@ -8,12 +8,17 @@ const {
 	React,
 	i18n: { Messages },
 } = require('powercord/webpack');
-const { Tooltip, Flex, Icon } = require('powercord/components');
+const {
+	Tooltip,
+	Flex,
+	Icon,
+	settings: { SwitchItem },
+} = require('powercord/components');
 const Settings = require('./Components/settings');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
-		this.loadStylesheet('style.css');
+		this.loadStylesheet('style.scss');
 		this.peopleList = ['PeopleListSectionedNonLazy', 'PeopleListSectionedLazy'];
 		this.contextMenus = ['DMUserContextMenu', 'GuildChannelUserContextMenu', 'UserGenericContextMenu', 'GroupDMUserContextMenu'];
 		powercord.api.settings.registerSettings(this.entityID, {
@@ -75,21 +80,28 @@ module.exports = class betterfriendslist extends Plugin {
 							break;
 						case 'ONLINE':
 							newChildren[0] += ` - ${getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()}`;
-							//newChildren.push(this.createBadge(getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()));
 							break;
 						case 'PENDING':
 							newChildren[0] += ' - ';
-							newChildren.splice(1, 1, React.createElement(Tooltip, {
+							newChildren.splice(
+								1,
+								1,
+								React.createElement(Tooltip, {
 									text: 'Incoming',
 									position: 'bottom',
 									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[8], height: '20' }),
 								})
 							);
 							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
-							newChildren.splice(3, 1, React.createElement(Tooltip, { 
-								text: 'Outgoing', 
-								position: 'bottom', 
-								children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[12] }) }));
+							newChildren.splice(
+								3,
+								1,
+								React.createElement(Tooltip, {
+									text: 'Outgoing',
+									position: 'bottom',
+									children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[13] }),
+								})
+							);
 							newChildren.splice(4, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
 							break;
 						case 'BLOCKED':
@@ -188,7 +200,9 @@ module.exports = class betterfriendslist extends Plugin {
 				}
 
 				const userContextMenuItems = res.props.children.props.children;
-				const group = userContextMenuItems.find(child => Array.isArray(child.props?.children) && child.props.children.find(ch => ch?.props?.id === 'block'));
+				const group = userContextMenuItems.find(
+					child => Array.isArray(child.props?.children) && child.props.children.find(ch => ch?.props?.id === 'block')
+				);
 
 				if (group) {
 					group.props.children.push(addFavButton);
@@ -218,6 +232,7 @@ module.exports = class betterfriendslist extends Plugin {
 		inject(`bfl-${moduleName}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
+			if (this.settings.get('friend_grid', true)) document.querySelector('.peopleList-3c4jOR').classList.add('grid');
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
@@ -238,12 +253,18 @@ module.exports = class betterfriendslist extends Plugin {
 										.filter(n => n)
 										.map(data =>
 											React.createElement('div', {
-												className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === data.key && headers.headerCellSorted, headers.clickable].join(' '),
+												className: [
+													'bfl-header bfl-nameCell',
+													headers.headerCell,
+													sortKey === data.key && headers.headerCellSorted,
+													headers.clickable,
+												].join(' '),
 												children: React.createElement('div', {
 													className: headers.headerCellContent,
 													children: [
 														data.label,
-														sortKey === data.key && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 12] }),
+														sortKey === data.key &&
+															React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 13] }),
 													].filter(n => n),
 												}),
 												onClick: () => {
@@ -263,12 +284,18 @@ module.exports = class betterfriendslist extends Plugin {
 										),
 								this.settings.get('showFavorite', true) &&
 									React.createElement('div', {
-										className: ['bfl-header bfl-nameCell', headers.headerCell, sortKey === 'isFavorite' && headers.headerCellSorted, headers.clickable].join(' '),
+										className: [
+											'bfl-header bfl-nameCell',
+											headers.headerCell,
+											sortKey === 'isFavorite' && headers.headerCellSorted,
+											headers.clickable,
+										].join(' '),
 										children: React.createElement('div', {
 											className: headers.headerCellContent,
 											children: [
 												'Favorite',
-												sortKey === 'isFavorite' && React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 12] }),
+												sortKey === 'isFavorite' &&
+													React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 8 : 13] }),
 											].filter(n => n),
 										}),
 										onClick: () => {
@@ -285,7 +312,7 @@ module.exports = class betterfriendslist extends Plugin {
 											this.rerenderList();
 										},
 									}),
-								this.settings.get('addSearch', true) &&
+								this.settings.get('addSearch', true) && [
 									React.createElement(Flex.Child, {
 										children: React.createElement('div', {
 											children: React.createElement('input', {
@@ -299,6 +326,19 @@ module.exports = class betterfriendslist extends Plugin {
 											}),
 										}),
 									}),
+									React.createElement(
+										SwitchItem,
+										{
+											className: 'switchButtonBFL',
+											value: this.settings.get('friend_grid', true),
+											onChange: () => {
+												this.settings.set('friend_grid', !this.settings.get('friend_grid', true));
+												document.querySelector('.peopleList-3c4jOR').classList.toggle('grid');
+											},
+										},
+										'Show list in grid'
+									),
+								],
 							]
 								.flat(10)
 								.filter(n => n),
@@ -311,11 +351,16 @@ module.exports = class betterfriendslist extends Plugin {
 					if (sortKey || searchQuery) {
 						if (searchQuery) {
 							let usedSearchQuery = searchQuery.toLowerCase();
-							newSection = newSection.filter(user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1);
+							newSection = newSection.filter(
+								user => user && typeof user.props.usernameLower == 'string' && user.props.usernameLower.indexOf(usedSearchQuery) > -1
+							);
 						}
 						if (sortKey) {
 							newSection = newSection.map(user =>
-								Object.assign({}, user, { statusIndex: statusSortOrder[user.props.status], isFavorite: this.FAV_FRIENDS.includes(user.props.user.id) })
+								Object.assign({}, user, {
+									statusIndex: statusSortOrder[user.props.status],
+									isFavorite: this.FAV_FRIENDS.includes(user.props.user.id),
+								})
 							);
 							if (sortKey === 'isFavorite') newSection = newSection.filter(user => user.isFavorite);
 							else
