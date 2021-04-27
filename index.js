@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { findInTree } = require('powercord/util');
+const { findInTree, waitFor } = require('powercord/util');
 const {
 	getModule,
 	getModuleByDisplayName,
@@ -232,7 +232,7 @@ module.exports = class betterfriendslist extends Plugin {
 		inject(`bfl-${moduleName}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
 			let childrenRender = res.props.children.props.children;
-			if (this.settings.get('friend_grid', true)) document.querySelector('.peopleList-3c4jOR').classList.add('grid');
+			if (this.settings.get('friend_grid', true)) waitFor('.peopleList-3c4jOR').then(elm => elm?.classList.add('grid'));
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
