@@ -91,11 +91,9 @@
 }
 .peopleList-3c4jOR.grid {
 	& > div {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, calc(50% - 4px));
-		-webkit-box-pack: center;
-		-ms-flex-pack: center;
+		display: flex;
 		justify-content: center;
+		flex-wrap: wrap;
 		margin-top: 16px;
 		padding-top: 40px;
 	}
@@ -107,6 +105,7 @@
 		z-index: 0;
 		position: relative;
 		transform: translateZ(0);
+		width: 350px;
 		&:nth-child(2):last-child {
 			width: 190%;
 			&:hover {
