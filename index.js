@@ -236,8 +236,7 @@ module.exports = class betterfriendslist extends Plugin {
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
 				if (!children.props.children) return children;
-				if (this.settings.get('friend_grid', true))
-					waitFor('.peopleList-3c4jOR').then(elm => elm?.classList.contains('grid') && elm?.classList.add('grid'));
+				if (this.settings.get('friend_grid', true)) waitFor('.peopleList-3c4jOR').then(elm => elm?.classList.add('grid'));
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',
