@@ -92,7 +92,7 @@ module.exports = class betterfriendslist extends Plugin {
 									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[8], height: '20' }),
 								})
 							);
-							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
+							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_INCOMING]);
 							newChildren.splice(
 								3,
 								1,
