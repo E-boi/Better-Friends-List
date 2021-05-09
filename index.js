@@ -89,7 +89,7 @@ module.exports = class betterfriendslist extends Plugin {
 								React.createElement(Tooltip, {
 									text: 'Incoming',
 									position: 'bottom',
-									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[17], height: '20' }),
+									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[13], height: '20' }),
 								})
 							);
 							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_INCOMING]);
@@ -99,7 +99,7 @@ module.exports = class betterfriendslist extends Plugin {
 								React.createElement(Tooltip, {
 									text: 'Outgoing',
 									position: 'bottom',
-									children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[13] }),
+									children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[17] }),
 								})
 							);
 							newChildren.splice(4, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
