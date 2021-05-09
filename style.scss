@@ -1,3 +1,5 @@
+@import url('https://discordsnippets.github.io/usrbg/usrbg.css');
+
 .bfl-title {
 	text-align: center;
 }
@@ -11,10 +13,6 @@
 	border-left: 1px solid var(--background-modifier-accent);
 	box-sizing: border-box;
 	padding: 0 12px;
-}
-
-.bfl-down {
-	margin-top: 2px;
 }
 
 .bfl-container {
@@ -114,4 +112,26 @@
 			}
 		}
 	}
+}
+
+.grid .peopleListItem-2nzedh.grid {
+	transform: translateZ(0);
+}
+.grid .peopleListItem-2nzedh .wrapper-3t9DeA::after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.5;
+	pointer-events: none;
+	background: var(--user-background) center/cover no-repeat;
+	-webkit-mask: linear-gradient(90deg, transparent, black, black);
+	z-index: 145673;
+	border-radius: 4px;
+}
+.grid .peopleListItem-2nzedh {
+	z-index: 1;
+	position: relative;
 }
