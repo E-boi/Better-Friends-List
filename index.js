@@ -89,7 +89,7 @@ module.exports = class betterfriendslist extends Plugin {
 								React.createElement(Tooltip, {
 									text: 'Incoming',
 									position: 'bottom',
-									children: React.createElement(Icon, { className: 'bfl-down', name: Icon.Names[13], height: '20' }),
+									children: React.createElement(Icon, { className: 'bfl-down', name: 'ArrowDropDown', height: '20' }),
 								})
 							);
 							newChildren.splice(2, 1, relationshipCount[constants.RelationshipTypes.PENDING_INCOMING]);
@@ -99,7 +99,7 @@ module.exports = class betterfriendslist extends Plugin {
 								React.createElement(Tooltip, {
 									text: 'Outgoing',
 									position: 'bottom',
-									children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: Icon.Names[17] }),
+									children: React.createElement(Icon, { className: 'bfl-down', height: '20', name: 'ArrowDropUp' }),
 								})
 							);
 							newChildren.splice(4, 1, relationshipCount[constants.RelationshipTypes.PENDING_OUTGOING]);
@@ -264,7 +264,7 @@ module.exports = class betterfriendslist extends Plugin {
 													children: [
 														data.label,
 														sortKey === data.key &&
-															React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 17 : 13] }),
+															React.createElement(Icon, { className: headers.sortIcon, name: sortReversed ? 'ArrowDropDown' : 'ArrowDropUp' }),
 													].filter(n => n),
 												}),
 												onClick: () => {
@@ -295,7 +295,7 @@ module.exports = class betterfriendslist extends Plugin {
 											children: [
 												'Favorite',
 												sortKey === 'isFavorite' &&
-													React.createElement(Icon, { className: headers.sortIcon, name: Icon.Names[sortReversed ? 17 : 13] }),
+													React.createElement(Icon, { className: headers.sortIcon, name: sortReversed ? 'ArrowDropDown' : 'ArrowDropUp' }),
 											].filter(n => n),
 										}),
 										onClick: () => {
