@@ -1,5 +1,3 @@
-@import url('https://discordsnippets.github.io/usrbg/usrbg.css');
-
 .bfl-title {
 	text-align: center;
 }
@@ -128,7 +126,6 @@
 	height: 100%;
 	opacity: 0.5;
 	pointer-events: none;
-	background: var(--user-background) center/cover no-repeat;
 	-webkit-mask: linear-gradient(90deg, transparent, black, black);
 	z-index: 145673;
 	border-radius: 4px;
