@@ -26,11 +26,6 @@ module.exports = class betterfriendslist extends Plugin {
 			label: 'Better Friends List',
 			render: Settings,
 		});
-		this.settings.get('mutualGuilds', true);
-		this.settings.get('sortOptions', true);
-		this.settings.get('totalAmount', true);
-		this.settings.get('addSearch', true);
-		this.settings.get('showFavorite', true);
 
 		this.FAV_FRIENDS = this.settings.get('favoriteFriends', []);
 		if (!this.FAV_FRIENDS) {
@@ -117,7 +112,7 @@ module.exports = class betterfriendslist extends Plugin {
 	_injectFriendRow() {
 		const FriendRow = getModule(m => m.displayName === 'FriendRow', false).prototype;
 		inject('bfl-peoplelist', FriendRow, 'render', (_, res) => {
-			if (!this.settings.get('mutualGuilds')) return res;
+			if (!this.settings.get('mutualGuilds', true)) return res;
 			if (typeof res.props.children === 'function') {
 				if (res._owner.stateNode.props.mutualGuilds.length !== 0) {
 					const childrenRender = res.props.children;
@@ -137,7 +132,7 @@ module.exports = class betterfriendslist extends Plugin {
 									guild.icon
 										? React.createElement(Guild.GuildIcon, {
 												size: Guild.GuildIcon.Sizes.SMALLER,
-												guild: guild,
+												guild,
 												style: {
 													backgroundImage: `url("https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp?size=256")`,
 												},
