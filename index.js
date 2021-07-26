@@ -61,7 +61,8 @@ module.exports = class betterfriendslist extends Plugin {
 		const TabBar = getModuleByDisplayName('TabBar', false).prototype;
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			if (res.props['aria-label'] !== Messages.FRIENDS) return res; // fix so only tab bar in friends list gets inject into
-			if (!_this.settings.get('totalAmount')) return res;
+			if (!_this.settings.get('totalAmount', true)) return res;
+			console.log(res);
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
