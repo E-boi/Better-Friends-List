@@ -62,7 +62,6 @@ module.exports = class betterfriendslist extends Plugin {
 		inject('bfl-tabbar', TabBar, 'render', (_, res) => {
 			if (res.props['aria-label'] !== Messages.FRIENDS) return res; // fix so only tab bar in friends list gets inject into
 			if (!_this.settings.get('totalAmount', true)) return res;
-			console.log(res);
 			let relationships = getModule(['getRelationships'], false).__proto__.getRelationships(),
 				relationshipCount = {};
 			for (let type in constants.RelationshipTypes) relationshipCount[type] = 0;
@@ -75,7 +74,12 @@ module.exports = class betterfriendslist extends Plugin {
 							newChildren[0] += ` - ${relationshipCount[constants.RelationshipTypes.FRIEND]}`;
 							break;
 						case 'ONLINE':
-							newChildren[0] += ` - ${getModule(['getOnlineFriendCount'], false).__proto__.getOnlineFriendCount()}`;
+							newChildren[0] += ` - ${
+								Object.entries(relationships).filter(
+									n =>
+										n[1] === constants.RelationshipTypes.FRIEND && getModule(['getStatus'], false).getStatus(n[0]) === constants.StatusTypes.OFFLINE
+								).length
+							}`;
 							break;
 						case 'PENDING':
 							newChildren[0] += ' - ';
