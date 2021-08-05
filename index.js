@@ -77,7 +77,7 @@ module.exports = class betterfriendslist extends Plugin {
 							newChildren[0] += ` - ${
 								Object.entries(relationships).filter(
 									n =>
-										n[1] === constants.RelationshipTypes.FRIEND && getModule(['getStatus'], false).getStatus(n[0]) === constants.StatusTypes.OFFLINE
+										n[1] === constants.RelationshipTypes.FRIEND && getModule(['getStatus'], false).getStatus(n[0]) !== constants.StatusTypes.OFFLINE
 								).length
 							}`;
 							break;
