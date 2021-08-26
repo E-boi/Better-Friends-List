@@ -176,39 +176,37 @@ module.exports = class betterfriendslist extends Plugin {
 		const isFavFriend = id => this.FAV_FRIENDS.includes(id);
 		inject(`bfl-${moduleName}`, UserContextMenu, 'default', ([{ user }], res) => {
 			if (!this.settings.get('showFavorite', true)) return res;
-			if (isFriend(user.id)) {
-				let addFavButton;
-				if (!isFavFriend(user.id)) {
-					addFavButton = React.createElement(Menu.MenuItem, {
-						action: () => {
-							this.FAV_FRIENDS.push(user.id);
-							this.settings.set('favoriteFriends', this.FAV_FRIENDS);
-							if (this.favFriendsInstance) this.favFriendsInstance.forceUpdate();
-						},
-						id: 'bfl-AddfavFriend',
-						label: 'Add to favorite friends',
-					});
-				} else {
-					addFavButton = React.createElement(Menu.MenuItem, {
-						action: () => {
-							this.FAV_FRIENDS = this.FAV_FRIENDS.filter(a => a !== user.id);
-							this.settings.set('favoriteFriends', this.FAV_FRIENDS);
-						},
-						id: 'bfl-RemovefavFriend',
-						label: 'Remove favorite friend',
-					});
-				}
+			let addFavButton;
+			if (!isFavFriend(user.id) && isFriend(user.id)) {
+				addFavButton = React.createElement(Menu.MenuItem, {
+					action: () => {
+						this.FAV_FRIENDS.push(user.id);
+						this.settings.set('favoriteFriends', this.FAV_FRIENDS);
+						if (this.favFriendsInstance) this.favFriendsInstance.forceUpdate();
+					},
+					id: 'bfl-AddfavFriend',
+					label: 'Add to favorite friends',
+				});
+			} else if (isFavFriend(user.id)) {
+				addFavButton = React.createElement(Menu.MenuItem, {
+					action: () => {
+						this.FAV_FRIENDS = this.FAV_FRIENDS.filter(a => a !== user.id);
+						this.settings.set('favoriteFriends', this.FAV_FRIENDS);
+					},
+					id: 'bfl-RemovefavFriend',
+					label: 'Remove favorite friend',
+				});
+			}
+			if (!addFavButton) return res;
+			const userContextMenuItems = res.props.children.props.children;
+			const group = userContextMenuItems.find(
+				child => Array.isArray(child.props?.children) && child.props.children.find(ch => ch?.props?.id === 'block')
+			);
 
-				const userContextMenuItems = res.props.children.props.children;
-				const group = userContextMenuItems.find(
-					child => Array.isArray(child.props?.children) && child.props.children.find(ch => ch?.props?.id === 'block')
-				);
-
-				if (group) {
-					group.props.children.push(addFavButton);
-				} else {
-					userContextMenuItems.push(React.createElement(Menu.MenuGroup, null, addFavButton));
-				}
+			if (group) {
+				group.props.children.push(addFavButton);
+			} else {
+				userContextMenuItems.push(React.createElement(Menu.MenuGroup, null, addFavButton));
 			}
 			return res;
 		});
