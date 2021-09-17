@@ -65,17 +65,17 @@
 }
 
 @media screen and (max-width: 776px) {
-	.peopleList-3c4jOR:not(.grid) {
+	.peopleList-3c4jOR {
 		padding-top: 80px;
 	}
 }
 @media screen and (max-width: 1135px) {
-	.peopleList-3c4jOR:not(.grid) {
+	.peopleList-3c4jOR {
 		padding-top: 65px;
 	}
 }
 @media screen and (min-width: 1135px) {
-	.peopleList-3c4jOR:not(.grid) {
+	.peopleList-3c4jOR {
 		padding-top: 50px;
 	}
 
@@ -91,7 +91,7 @@
 	justify-content: center;
 	flex-wrap: wrap;
 }
-.peopleList-3c4jOR.grid {
+.grid .peopleList-3c4jOR {
 	& > div {
 		display: flex;
 		justify-content: center;
@@ -117,7 +117,7 @@
 	}
 }
 
-.grid .peopleListItem-2nzedh.grid {
+.grid .peopleListItem-2nzedh {
 	transform: translateZ(0);
 }
 .grid .peopleListItem-2nzedh .wrapper-3t9DeA::after {

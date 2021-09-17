@@ -1,6 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
-const { findInTree, waitFor } = require('powercord/util');
+const { findInTree } = require('powercord/util');
 const {
 	getModule,
 	getModuleByDisplayName,
@@ -19,6 +19,7 @@ const Settings = require('./Components/settings');
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
 		this.loadStylesheet('style.scss');
+		if (this.settings.get('friend_grid', true)) document.body.classList.add('grid');
 		this.peopleList = ['PeopleListSectionedNonLazy', 'PeopleListSectionedLazy'];
 		this.contextMenus = ['DMUserContextMenu', 'GuildChannelUserContextMenu', 'UserGenericContextMenu', 'GroupDMUserContextMenu'];
 		powercord.api.settings.registerSettings(this.entityID, {
@@ -234,7 +235,6 @@ module.exports = class betterfriendslist extends Plugin {
 			res.props.children.props.children = (...args) => {
 				let children = childrenRender(...args);
 				if (!children.props.children) return children;
-				if (this.settings.get('friend_grid', true)) waitFor('.peopleList-3c4jOR').then(elm => elm?.classList.add('grid'));
 				children.props.children[0].props.children[0] = [
 					React.createElement(
 						'div',
