@@ -214,11 +214,12 @@ module.exports = class betterfriendslist extends Plugin {
 				//const users = [];
 				let children = childrenRender(...args);
 				console.log(children);
-				if (!children.props.sectionHeight) return children;
-				const children2Render = children.props.sectionHeight;
-				children.props.sectionHeight = (...args) => {
+				if (!children.props.renderSection) return children;
+				const children2Render = children.props.renderSection;
+				children.props.renderSection = (...args) => {
 					let e = children2Render(...args);
 					console.log(e);
+					e.props.title = 'hry';
 					return e;
 				};
 				// if (children.props.renderRow) {
