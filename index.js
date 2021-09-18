@@ -207,12 +207,20 @@ module.exports = class betterfriendslist extends Plugin {
 		const PeopleList = getModule(m => m.default?.displayName === moduleName, false);
 		inject(`bfl-${moduleName}`, PeopleList, 'default', (args, res) => {
 			const headers = getModule(['headerCell'], false);
+			console.log(res);
 			let childrenRender = res.props.children.props.children;
 			const title = args[0].getSectionTitle(args[0].statusSections, 0);
 			res.props.children.props.children = (...args) => {
 				//const users = [];
 				let children = childrenRender(...args);
 				console.log(children);
+				if (!children.props.renderRow) return children;
+				const children2Render = children.props.renderRow;
+				children.props.renderRow = (...args) => {
+					let e = children2Render(...args);
+					console.log(e);
+					return e;
+				};
 				// if (children.props.renderRow) {
 				// 	const childrenRender2 = children.props.renderRow;
 				// 	children.props.renderRow = (...args) => {
