@@ -218,7 +218,7 @@ module.exports = class betterfriendslist extends Plugin {
 				const children2Render = children.props.renderSection;
 				children.props.renderSection = (...args) => {
 					let e = children2Render(...args);
-					console.log(e);
+					console.log(...args);
 					e.props.title = [
 						React.createElement(
 							'div',
@@ -433,8 +433,7 @@ module.exports = class betterfriendslist extends Plugin {
 	}
 
 	rerenderList() {
-		const button = document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`);
-		if (button) button.click();
+		document.querySelector(`.tabBar-ZmDY9v .selected-3s45Ha`)?.click();
 	}
 
 	createBadge(amount, text) {
