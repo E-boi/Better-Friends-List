@@ -18,8 +18,8 @@ const Settings = require('./Components/settings');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
-		this.loadStylesheet('style.scss');
-		if (this.settings.get('friend_grid', true)) document.body.classList.add('grid');
+		if (this.settings.get('friend_grid', true)) this.loadStylesheet('friendgrid.scss');
+		else this.loadStylesheet('style.scss');
 		this.peopleList = ['PeopleListSectionedNonLazy', 'PeopleListSectionedLazy'];
 		this.contextMenus = ['DMUserContextMenu', 'GuildChannelUserContextMenu', 'UserGenericContextMenu', 'GroupDMUserContextMenu'];
 		powercord.api.settings.registerSettings(this.entityID, {

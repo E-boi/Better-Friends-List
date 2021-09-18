@@ -1,0 +1,24 @@
+@import url('https://corellanstoma.github.io/Friends-Grid/src/source.css');
+@import './style.scss';
+:root {
+	--friends-card-radius: 8px;
+	--friends-card-height: 180px;
+	--firends-card-margin-bottom: 26px;
+	--user-accent-color: var(--brand-experiment);
+}
+
+.bfl-headerTitle {
+	top: -25px;
+}
+
+.peopleColumn-29fq28 > div > div {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-column-gap: 12px;
+	row-gap: 12px;
+	height: auto !important;
+}
+
+.peopleColumn-29fq28 > div > div [style='height: 0px;'] {
+	display: none;
+}
