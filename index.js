@@ -220,6 +220,7 @@ module.exports = class betterfriendslist extends Plugin {
 					let e = children2Render(...args);
 					console.log(e);
 					e.props.title = 'hry';
+					e.props.children = ['hey']; // doubt it will work but idk
 					return e;
 				};
 				// if (children.props.renderRow) {
