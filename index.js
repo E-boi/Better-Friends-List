@@ -219,7 +219,55 @@ module.exports = class betterfriendslist extends Plugin {
 				children.props.renderSection = (...args) => {
 					let e = children2Render(...args);
 					console.log(e);
-					e.props.title = ['hey', React.createElement('span', null, 'made with react')];
+					e.props.title = [
+						React.createElement(
+							'div',
+							{ className: 'bfl-headerTitle bfl-container' },
+							React.createElement(Flex, {
+								align: Flex.Align.CENTER,
+								children: [
+									React.createElement('div', { className: 'bfl-title', children: [title] }),
+									this.settings.get('sortOptions', true) &&
+										[
+											{ key: 'usernameLower', label: Messages.FRIENDS_COLUMN_NAME },
+											{ key: 'statusIndex', label: Messages.FRIENDS_COLUMN_STATUS },
+										]
+											.filter(n => n)
+											.map(data =>
+												React.createElement('div', {
+													className: [
+														'bfl-header bfl-nameCell',
+														headers.headerCell,
+														sortKey === data.key && headers.headerCellSorted,
+														headers.clickable,
+													].join(' '),
+													children: React.createElement('div', {
+														className: headers.headerCellContent,
+														children: [
+															data.label,
+															sortKey === data.key &&
+																React.createElement(Icon, { className: headers.sortIcon, name: sortReversed ? 'ArrowDropDown' : 'ArrowDropUp' }),
+														].filter(n => n),
+													}),
+													onClick: () => {
+														if (sortKey === data.key) {
+															if (!sortReversed) sortReversed = true;
+															else {
+																sortKey = null;
+																sortReversed = false;
+															}
+														} else {
+															sortKey = data.key;
+															sortReversed = false;
+														}
+														this.rerenderList();
+													},
+												})
+											),
+								],
+							})
+						),
+					];
 					return e;
 				};
 				// if (children.props.renderRow) {
