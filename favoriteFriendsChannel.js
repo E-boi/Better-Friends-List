@@ -85,14 +85,16 @@ module.exports = async function () {
 			// Previous elements
 			...res.props.children,
 			// Favorite Friends
-			() =>
-				React.createElement(FavoriteFriends, {
+			() => {
+				if (res.props.listRef.current.getItems?.()[0] && res.props.listRef.current.getItems?.()[0]?.type !== 'section') return null;
+				return React.createElement(FavoriteFriends, {
 					classes,
 					ConnectedPrivateChannel,
 					FAV_FRIENDS: this.FAV_FRIENDS,
 					selectedChannelId: res.props.selectedChannelId,
 					_this,
-				}),
+				});
+			},
 		];
 
 		return res;
