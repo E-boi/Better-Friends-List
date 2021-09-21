@@ -18,6 +18,8 @@ module.exports = class FavoriteFriends extends React.PureComponent {
 		if (!classes || !FAV_FRIENDS || !FAV_FRIENDS.length) return null;
 		const { lastMessageId } = getModule(['lastMessageId'], false);
 		const { getDMFromUserId } = getModule(['getDMFromUserId'], false);
+		const { getChannel } = getModule(['getChannel'], false);
+		const { DirectMessage } = getModule(['DirectMessage'], false);
 
 		return [
 			// Header
@@ -42,7 +44,13 @@ module.exports = class FavoriteFriends extends React.PureComponent {
 			// Friends
 			this.state.expanded
 				? FAV_FRIENDS.sort((a, b) => lastMessageId(getDMFromUserId(b)) - lastMessageId(getDMFromUserId(a))).map(userId => (
-						<this.props.ConnectedPrivateChannel userId={userId} currentSelectedChannel={this.props.selectedChannelId} />
+						<DirectMessage
+							aria-posinset={7}
+							aria-setsize={54}
+							tabIndex={-1}
+							channel={getChannel(getDMFromUserId(userId))}
+							selected={this.props.selectedChannelId === getDMFromUserId(userId)}
+						/>
 				  ))
 				: null,
 		];
