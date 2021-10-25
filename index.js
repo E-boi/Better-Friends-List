@@ -28,9 +28,10 @@ module.exports = class betterfriendslist extends Plugin {
 			render: Settings,
 		});
 
-		this.FAV_FRIENDS = this.settings.get('favoriteFriends', []);
+		this.FAV_FRIENDS = this.settings.get('favoriteFriends');
 		if (!this.FAV_FRIENDS) {
 			this.settings.set('favoriteFriends', []);
+			this.FAV_FRIENDS = [];
 		}
 
 		this._injectTabBar();
@@ -183,7 +184,7 @@ module.exports = class betterfriendslist extends Plugin {
 					action: () => {
 						this.FAV_FRIENDS.push(user.id);
 						this.settings.set('favoriteFriends', this.FAV_FRIENDS);
-						if (this.favFriendsInstance) this.favFriendsInstance.forceUpdate();
+						// if (this.favFriendsInstance) this.favFriendsInstance.forceUpdate();
 					},
 					id: 'bfl-AddfavFriend',
 					label: 'Add to favorite friends',
