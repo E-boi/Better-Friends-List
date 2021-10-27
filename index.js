@@ -18,6 +18,18 @@ const Settings = require('./Components/settings');
 
 module.exports = class betterfriendslist extends Plugin {
 	startPlugin() {
+		powercord.api.notices.sendAnnouncement(Date.now().toString(), {
+			message: React.createElement(
+				'div',
+				null,
+				'Better Friends List is deprecated in favor of ',
+				React.createElement('a', { href: 'https://github.com/Bricklou/powercord-pindms', target: '_blank' }, 'pin dms'),
+				'.'
+			),
+			color: 'red',
+			button: { onClick: () => powercord.pluginManager.disable('Better-Friends-List'), text: 'Disable plugin' },
+		});
+		return;
 		if (this.settings.get('friend_grid', true)) this.loadStylesheet('friendgrid.scss');
 		else this.loadStylesheet('style.scss');
 		this.peopleList = ['PeopleListSectionedNonLazy', 'PeopleListSectionedLazy'];
